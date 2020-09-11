@@ -1,14 +1,14 @@
-package App;
+package lab5_10;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /*
     frame.pack();
     размер кнопок
     контейнеры
+
+    https://wireframe.cc/HCKf8T
  */
 
 public class AppGUI extends JFrame {

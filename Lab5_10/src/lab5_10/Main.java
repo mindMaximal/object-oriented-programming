@@ -1,4 +1,4 @@
-package App;
+package lab5_10;
 
 public class Main {
 
