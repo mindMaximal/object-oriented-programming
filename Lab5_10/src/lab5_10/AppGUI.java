@@ -11,14 +11,26 @@ import java.awt.*;
     https://wireframe.cc/HCKf8T
  */
 
+/*
+
+    Color Scheme:
+
+    1 - #7ebc59 - Зеленый
+    2 - #33363b - Черный
+    3 - #368cbf - Синий
+    4 - #ffffff - Белый
+
+ */
+
 public class AppGUI extends JFrame {
 
     //Создаем toolkit для работы его методами
     Toolkit toolkit = Toolkit.getDefaultToolkit();
     //Получаем размеры экрана
     Dimension screen = toolkit.getScreenSize();
-    //Создаем экземпляр панели
+    //Создаем экземпляр панелей
     MainPanel mainPanel = new MainPanel();
+
 
     //Размеры фрейма
     private final int width = 500;
@@ -26,7 +38,7 @@ public class AppGUI extends JFrame {
 
     public AppGUI () {
         //Устанавливает заголовок окна
-        super("Application Title");
+        super("Транспортные средства");
 
         //Расчитываем позицию по центру
         int posX = (int) (screen.width / 2 - width / 2);
@@ -35,7 +47,7 @@ public class AppGUI extends JFrame {
         //Устанавливаем размеры и позиционирование
         setBounds(posX, posY, width, height);
         //Установим цвет фона
-        getContentPane().setBackground(Color.WHITE);
+        getContentPane().setBackground(Color.decode("#ffffff"));
         //Установим иконку приложения
         setIconImage(toolkit.getImage(getClass().getResource("train.png")));
         //Устанавливает обработчик для закрытия приложения
