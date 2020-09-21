@@ -12,6 +12,13 @@ public class Car extends Vehicle {
         this.wheelsCount = wheelsCount;
     }
 
+    @Override
+    public Object[] getObject() {
+        return new String[] {
+                name, Integer.toString(speed), Integer.toString(weight), color, Integer.toString(wheelsCount)
+        };
+    }
+
     //Перегружаем метод родителя для получения максимальной нагрузки на колесную базу
     @Override
     public String getLoad() {

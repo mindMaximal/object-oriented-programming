@@ -16,9 +16,15 @@ public abstract class Vehicle {
     public int getSpeed() {
         return speed;
     }
-    
+    //Метод возвращающий вес
     public int getWeight() {
         return weight;
+    }
+    //Метод возвращающий данные о ТС в виде объекта
+    public Object[] getObject() {
+        return new String[] {
+                name, Integer.toString(speed), Integer.toString(weight), color
+        };
     }
     
     //Стандартный конструктор 

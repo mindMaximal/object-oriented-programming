@@ -11,6 +11,13 @@ public class Express extends Train {
           //Заполняем поля этого класса
         this.exressType = exressType;
     }
+
+    @Override
+    public Object[] getObject() {
+        return new String[] {
+                name, Integer.toString(speed), Integer.toString(weight), color, Integer.toString(railCount), exressType
+        };
+    }
     
     //Метод для получения типа экспресса
     public String getType() {

@@ -5,42 +5,63 @@ import java.util.Random;
 
 public class Company {
     //Список для хранения объектов
-    protected ArrayList<Vehicle> vehicles = new ArrayList<>();
+    protected ArrayList<Vehicle> carList = new ArrayList<>();
+    protected ArrayList<Vehicle> expressList = new ArrayList<>();
     //Поле для получения случайного числа
     final Random rnd = new Random();
+
+    //Поля для объектов
+    protected String name;
+    protected int speed;
+    protected int weight;
+    protected String color;
+    protected int wheelsCount;
+    protected String expressType;
+    protected int railCount;
     
     //Стандартный конструктор
     public Company() {
-        //Поля для объектов
-        String name;
-        int speed;
-        int weight;
-        String color;
-        int wheelsCount;
-        String expressType;
-        int railCount;
-        
-        //Счетчики 
+        //Заполним список 10 случайными объектами
+        randomVehicles(5);
+    }
+    
+    //Метод, добавляющий новое транспортное средство в список - машина
+    public void addCar(String name, int speed, int weight, String color, int wheelsCount) {
+        //Создаем объект класса Car
+        Car carTmp = new Car(name, speed, weight, color, wheelsCount);
+        //Добавляем объект в список
+        carList.add(carTmp);
+    }
+    //Метод, добавляющий новое транспортное средство в список - экспресс
+    public void addExpress(String name, int speed, int weight, String color, int railCount, String expressType) {
+        //Создаем объект класса Express
+        Express expressTmp = new Express(name, speed, weight, color, railCount, expressType);
+        //Добавляем объект в список
+        expressList.add(expressTmp);
+    }
+
+    public void randomVehicles(int count) {
+
+        //Счетчики
         int carsCount = 0;
         int expressCount = 0;
-        
-        //Заполним список 10 случайными объектами
-        for (int i = 0; i < 10; i++) {
+
+        for (int i = 0; i < count; i++) {
             //С помощью случайных чисел добавим объекты
             switch(rnd.nextInt(2)) {
-                case(0): 
+                case(0):
                     carsCount++;
                     //Заполним поля
                     name = "car " + carsCount;
                     speed = rnd.nextInt(150);
                     weight = rnd.nextInt(500) + 1000;
-                    color = "белый";
+                    color = rnd.nextInt(2) == 0 ? "белый" : "синий";
                     wheelsCount = rnd.nextInt(4) + 2;
-                    
+
                     //Создаем объект класса Car
                     Car carTmp = new Car(name, speed, weight, color, wheelsCount);
                     //Добавляем объект в список
-                    vehicles.add(carTmp);
+                    carList.add(carTmp);
                     break;
                 case(1):
                     expressCount++;
@@ -50,36 +71,25 @@ public class Company {
                     weight = rnd.nextInt(1000) + 2000;
                     color = "синий";
                     wheelsCount = rnd.nextInt(4) + 2;
-                    expressType = "междугородний";
+                    expressType = rnd.nextInt(2) == 0 ? "Междугородний" : "Региональный";;
                     railCount = 2;
-                    
+
                     //Создаем объект класса Express
                     Express expressTmp = new Express(name, speed, weight, color, railCount, expressType);
                     //Добавляем объект в список
-                    vehicles.add(expressTmp);
+                    expressList.add(expressTmp);
                     break;
             }
         }
     }
-    
-    //Метод, добавляющий новое транспортное средство в список - машина
-    public void addVehicle(String name, int speed, int weight, String color, int wheelsCount) {
-        //Создаем объект класса Car
-        Car carTmp = new Car(name, speed, weight, color, wheelsCount);
-        //Добавляем объект в список
-        vehicles.add(carTmp);
-    }
-    //Метод, добавляющий новое транспортное средство в список - экспресс
-    public void addVehicle(String name, int speed, int weight, String color, int railCount, String expressType) {
-        //Создаем объект класса Express
-        Express expressTmp = new Express(name, speed, weight, color, railCount, expressType);
-        //Добавляем объект в список
-        vehicles.add(expressTmp);
-    }
 
     //Метод, возвращающий список всех транспортных средств
-    public ArrayList<Vehicle> getList() {
-        return vehicles;
+    public ArrayList<Vehicle> getCarsList() {
+        return carList;
+    }
+    //Метод, возвращающий список всех транспортных средств
+    public ArrayList<Vehicle> getExpressList() {
+        return expressList;
     }
     //Метод поиска транспортного средства
     public String findVehicle(String name) {
@@ -89,7 +99,7 @@ public class Company {
         Vehicle vehicle = null;
         
         //Переберем список
-        for(Vehicle vehicleTmp : vehicles) {
+        for(Vehicle vehicleTmp : carList) {
             //Получим имя, полученного объекта
             String nameTmp = vehicleTmp.getName();
             //Если имена совпали, то
@@ -126,13 +136,13 @@ public class Company {
         int index = 0;
         
         //Переберем список
-        for(Vehicle vehicleTmp : vehicles) {
+        for(Vehicle vehicleTmp : carList) {
             //Получим имя, полученного объекта
             String nameTmp = vehicleTmp.getName();
             //Если имена совпали, то
             if (nameTmp.equals(name)) {
                 //Получаем номер наденного объекта
-                index = vehicles.indexOf(vehicleTmp);
+                index = carList.indexOf(vehicleTmp);
                 //Ставим флаг, что найдено
                 isFind = true;
             }
@@ -140,7 +150,7 @@ public class Company {
         
         if (isFind) {
             //Удалить полученный объект
-            vehicles.remove(index);
+            carList.remove(index);
             System.out.println("Транспортное средство удалено");
         } else {
             System.out.println("Транспортное средство не найдено");

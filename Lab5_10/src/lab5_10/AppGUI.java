@@ -9,6 +9,8 @@ import java.util.ArrayList;
     https://wireframe.cc/HCKf8T
     https://wireframe.cc/OQ8kV4
 
+     //JOptionPane.showMessageDialog(AppGUI.addPanel, labelArray[0].getText());
+
     https://coderoad.ru/40328735/%D0%9A%D0%B0%D0%BA-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-%D0%BA%D0%BD%D0%BE%D0%BF%D0%BA%D0%B8-%D0%B4%D0%BB%D1%8F-%D0%BF%D0%B5%D1%80%D0%B5%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-%D0%BD%D0%B0-%D0%BE%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9-JPanel
 
  */
@@ -29,7 +31,7 @@ public class AppGUI extends JFrame {
     //Объект класса-группы
     private static Company com;
     //Создаем экземпляр панелей
-    private static GeneralListPanel generalListPanel = new GeneralListPanel();;
+    public static ListPanel generalListPanel = new ListPanel();;
     private static MainPanel mainPanel = new MainPanel();
     public static JPanel contentPane = new JPanel();
     public static AddPanel addPanel = new AddPanel();
@@ -39,10 +41,9 @@ public class AppGUI extends JFrame {
     //Получаем размеры экрана
     Dimension screen = toolkit.getScreenSize();
 
-
     //Размеры фрейма
-    private final int width = 500;
-    private final int height = 300;
+    private final int width = 1000;
+    private final int height = 600;
 
     public AppGUI () {
         //Устанавливает заголовок окна
@@ -63,11 +64,6 @@ public class AppGUI extends JFrame {
         //Сделаем окно видимым
         setVisible(true);
 
-        //Добавляем основную панель в frame
-        //mainPanel = new MainPanel();
-//        add(mainPanel);
-
-
         contentPane.setLayout(new CardLayout(0, 0));
 
         contentPane.add(mainPanel, "Menu");
@@ -84,12 +80,24 @@ public class AppGUI extends JFrame {
         com = new Company();
     }
 
-//    public static void showGeneralList() {
-//        mainPanel.remove();
-//        generalListPanel.showPanel();
-//    }
+    public static Company getCom() {
+        return com;
+    }
 
-    public ArrayList<Vehicle> getList() {
-        return com.getList();
+    public static ArrayList<Vehicle> getCarsList() {
+        return com.getCarsList();
+    }
+    public static ArrayList<Vehicle> getExpressList() {
+        return com.getExpressList();
+    }
+
+    public static void addExpress(String name, int speed, int weight, String color, int railsCount, String expressType) {
+        com.addExpress(name, speed,weight, color, railsCount, expressType);
+        generalListPanel.addExpress(name, speed,weight, color, railsCount, expressType);
+    }
+
+    public static void addCar(String name, int speed, int weight, String color, int wheelsCount) {
+        com.addCar(name, speed,weight, color, wheelsCount);
+        generalListPanel.addCar(name, speed,weight, color, wheelsCount);
     }
 }
