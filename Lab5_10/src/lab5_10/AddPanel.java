@@ -1,18 +1,43 @@
 package lab5_10;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
+import java.math.BigDecimal;
 
 public class AddPanel extends JPanel {
     //Создаем переменные для элементов
-    private JLabel[] labelArray;
+    private static JLabel[] labelArray;
     private static JTextField[] textFields;
-    private JRadioButton[] radioButtons;
+    private static JRadioButton[] radioButtons;
+    private static boolean isEditing = false;
+    private static Vehicle vehicle;
+    private static int rowEditing;
+    private static int columnEditing;
 
     //Конструктор
     public AddPanel() {
         initPanel();
         addElementToPanel(this);
+        setValidation();
+    }
+
+    public static void setCellPos(int row, int column) {
+        rowEditing = row;
+        columnEditing = column;
+    }
+
+    public static int getRow() {
+        return rowEditing;
+    }
+
+    public static int getColumn() {
+        return columnEditing;
     }
 
     //Метод добавляющий элементы на панель
@@ -120,27 +145,56 @@ public class AddPanel extends JPanel {
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.addActionListener(e -> {
 
-            if (radioButtons[0].isSelected()) {
-                AppGUI.addCar(
-                        textFields[0].getText(),
-                        Integer.parseInt(textFields[1].getText()),
-                        Integer.parseInt(textFields[2].getText()),
-                        textFields[3].getText(),
-                        Integer.parseInt(textFields[4].getText())
-                );
-            } else if(radioButtons[1].isSelected()) {
-                AppGUI.addExpress(
-                        textFields[0].getText(),
-                        Integer.parseInt(textFields[1].getText()),
-                        Integer.parseInt(textFields[2].getText()),
-                        textFields[3].getText(),
-                        Integer.parseInt(textFields[4].getText()),
-                        textFields[5].getText()
-                );
-            }
+            if(isEditing) {
 
-            CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
-            cardLayout.show(AppGUI.getCardPane(), "List");
+                if (radioButtons[0].isSelected()) {
+                    AppGUI.updateVehicle(
+                            vehicle.getName(),
+                            textFields[0].getText(),
+                            Integer.parseInt(textFields[1].getText()),
+                            Integer.parseInt(textFields[2].getText()),
+                            textFields[3].getText(),
+                            Integer.parseInt(textFields[4].getText())
+                    );
+                } else if(radioButtons[1].isSelected()) {
+                    AppGUI.updateVehicle(
+                            vehicle.getName(),
+                            textFields[0].getText(),
+                            Integer.parseInt(textFields[1].getText()),
+                            Integer.parseInt(textFields[2].getText()),
+                            textFields[3].getText(),
+                            Integer.parseInt(textFields[4].getText()),
+                            textFields[5].getText()
+                    );
+                }
+
+                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                cardLayout.show(AppGUI.getCardPane(), "List");
+            } else {
+
+                if (radioButtons[0].isSelected()) {
+                    AppGUI.addCar(
+                            textFields[0].getText(),
+                            Integer.parseInt(textFields[1].getText()),
+                            Integer.parseInt(textFields[2].getText()),
+                            textFields[3].getText(),
+                            Integer.parseInt(textFields[4].getText())
+                    );
+                } else if(radioButtons[1].isSelected()) {
+                    AppGUI.addExpress(
+                            textFields[0].getText(),
+                            Integer.parseInt(textFields[1].getText()),
+                            Integer.parseInt(textFields[2].getText()),
+                            textFields[3].getText(),
+                            Integer.parseInt(textFields[4].getText()),
+                            textFields[5].getText()
+                    );
+                }
+
+                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                cardLayout.show(AppGUI.getCardPane(), "List");
+
+            }
 
         });
         c.ipady = 15;
@@ -189,8 +243,56 @@ public class AddPanel extends JPanel {
     //
     public static void fillFields(Vehicle vehicle) {
 
+        AddPanel.vehicle = vehicle;
+
+        isEditing = true;
+
+        if(vehicle instanceof Car) {
+            radioButtons[0].setSelected(true);
+
+            labelArray[4].setText("Количество колес:");
+            labelArray[5].setVisible(false);
+            textFields[5].setVisible(false);
+
+        } else if (vehicle instanceof Express) {
+            radioButtons[1].setSelected(true);
+
+            labelArray[4].setText("Количество баз:  ");
+            labelArray[5].setVisible(true);
+            textFields[5].setVisible(true);
+
+        }
+
         Object[] data = vehicle.getObject();
 
-        textFields[0].setText(data[0].toString());
+        for (int i = 0; i < data.length; i++) {
+            textFields[i].setText(data[i].toString());
+        }
     }
+
+    private void setValidation() {
+
+        PlainDocument doc = (PlainDocument) textFields[0].getDocument();
+        doc.setDocumentFilter(new DigitFilter());
+    }
+
+    static class DigitFilter extends DocumentFilter {
+        private static final String DIGITS = "\\d+";
+
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException, BadLocationException {
+
+            if (string.matches(DIGITS)) {
+                super.insertString(fb, offset, string, attr);
+            }
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String string, AttributeSet attrs) throws BadLocationException {
+            if (string.matches(DIGITS)) {
+                super.replace(fb, offset, length, string, attrs);
+            }
+        }
+    }
+
 }

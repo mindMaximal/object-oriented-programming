@@ -19,13 +19,26 @@ public class Car extends Vehicle {
         };
     }
 
+
+
+    @Override
+    public void updateVehicle(Object[] object) {
+        this.name = object[0].toString();
+        this.speed = Integer.parseInt(object[1].toString());
+        this.weight = Integer.parseInt(object[2].toString());
+        this.color = object[3].toString();
+        this.wheelsCount =  Integer.parseInt(object[4].toString());
+
+        System.out.printf("Обновлено ТС: %s %d %d %s %d %n", name, speed, weight, color, wheelsCount);
+    }
+
     //Перегружаем метод родителя для получения максимальной нагрузки на колесную базу
     @Override
     public String getLoad() {
         float load = weight / wheelsCount;
         return "Максимальная нагрузка на колесную базу составляет " + load;
     }
-    
+
     //Перегружаем метод родителя, возвращающий цвет автомобиля
     @Override
     public String getColor() {

@@ -34,9 +34,12 @@ public abstract class Vehicle {
         this.weight = weight;
         this.color = color;
     }
-    
+
     //Абстрактный метод, возвращающий нагрузку на колесную или рельсовую базу
     public abstract String getLoad();
+
     //Абстрактный метод, возвращающий цвет транспортного средства
     public abstract String getColor();
+
+    public abstract void updateVehicle(Object[] object);
 }

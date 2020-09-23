@@ -156,4 +156,44 @@ public class Company {
             System.out.println("Транспортное средство не найдено");
         }
     }
+
+    public void updateVehicle(String oldName, String name, int speed, int weight, String color, int wheelsCount) {
+        Vehicle vehicle = null;
+
+        for(Vehicle vehicleTmp : carList) {
+            //Получим имя, полученного объекта
+            String nameTmp = vehicleTmp.getName();
+            //Если имена совпали, то
+            if (nameTmp.equals(oldName)) {
+                //Записываем полученный объект
+                vehicle = vehicleTmp;
+            }
+        }
+
+        if (vehicle != null) {
+            Object[] object = {name, speed, weight, color, wheelsCount};
+
+            vehicle.updateVehicle(object);
+        }
+    }
+
+    public void updateVehicle(String oldName, String name, int speed, int weight, String color, int railsCount, String expressType) {
+        Vehicle vehicle = null;
+
+        for(Vehicle vehicleTmp : expressList) {
+            //Получим имя, полученного объекта
+            String nameTmp = vehicleTmp.getName();
+            //Если имена совпали, то
+            if (nameTmp.equals(oldName)) {
+                //Записываем полученный объект
+                vehicle = vehicleTmp;
+            }
+        }
+
+        if (vehicle != null) {
+            Object[] object = {name, speed, weight, color, railsCount, expressType};
+
+            vehicle.updateVehicle(object);
+        }
+    }
 }

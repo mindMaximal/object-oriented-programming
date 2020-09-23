@@ -382,4 +382,22 @@ public class ListPanel extends JPanel {
         });
     }
 
+    public void updateData(String oldName, String name, int speed, int weight, String color, int wheelsCount) {
+        DefaultTableModel model = (DefaultTableModel) carsTable.getModel();
+        model.setValueAt(name, AddPanel.getRow(), 0);
+        model.setValueAt(speed, AddPanel.getRow(), 1);
+        model.setValueAt(weight, AddPanel.getRow(), 2);
+        model.setValueAt(color, AddPanel.getRow(), 3);
+        model.setValueAt(wheelsCount, AddPanel.getRow(), 4);
+    }
+
+    public void updateData(String oldName, String name, int speed, int weight, String color, int railsCount, String expressType) {
+        DefaultTableModel model = (DefaultTableModel) expressTable.getModel();
+        model.setValueAt(name, AddPanel.getRow(), 0);
+        model.setValueAt(speed, AddPanel.getRow(), 1);
+        model.setValueAt(weight, AddPanel.getRow(), 2);
+        model.setValueAt(color, AddPanel.getRow(), 3);
+        model.setValueAt(railsCount, AddPanel.getRow(), 4);
+        model.setValueAt(expressType, AddPanel.getRow(), 5);
+    }
 }

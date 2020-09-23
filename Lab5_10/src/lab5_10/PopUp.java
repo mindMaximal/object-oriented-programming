@@ -17,6 +17,7 @@ public class PopUp  extends JPopupMenu {
             CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
             cardLayout.show(AppGUI.getCardPane(), "Add");
 
+            int column = table.columnAtPoint(e.getPoint());
             int row = table.rowAtPoint(e.getPoint());
             DefaultTableModel model = (DefaultTableModel) table.getModel();
 
@@ -24,7 +25,10 @@ public class PopUp  extends JPopupMenu {
 
             Vehicle vehicle = AppGUI.findVehicle(name, activeTable == 0 ? "CARS" : "EXPRESS");
 
+            AddPanel.setCellPos(row,column);
+
             AddPanel.fillFields(vehicle);
+
         });
 
         add(menuItem);

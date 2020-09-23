@@ -113,4 +113,14 @@ public class AppGUI extends JFrame {
     public static Vehicle findVehicle(String name, String type) {
         return com.findVehicle(name, type);
     }
+
+    public static void updateVehicle(String oldName, String name, int speed, int weight, String color, int wheelsCount) {
+        com.updateVehicle(oldName, name, speed, weight, color, wheelsCount);
+        listPanel.updateData(oldName, name, speed, weight, color, wheelsCount);
+    }
+
+    public static void updateVehicle(String oldName, String name, int speed, int weight, String color, int railsCount, String expressType) {
+        com.updateVehicle(oldName, name, speed, weight, color, railsCount, expressType);
+        listPanel.updateData(oldName, name, speed, weight, color, railsCount, expressType);
+    }
 }
