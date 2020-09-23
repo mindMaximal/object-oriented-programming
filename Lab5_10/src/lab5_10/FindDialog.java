@@ -20,8 +20,8 @@ public class FindDialog extends JDialog {
         int width = 400;
         int height = 230;
         //Расчитываем позицию по центру
-        int posX = (int) (screen.width / 2 - width / 2);
-        int posY = (int) (screen.height / 2 - height / 2);
+        int posX = screen.width / 2 - width / 2;
+        int posY = screen.height / 2 - height / 2;
 
         //Устанавливаем размеры и позиционирование
         setBounds(posX, posY, width, height);

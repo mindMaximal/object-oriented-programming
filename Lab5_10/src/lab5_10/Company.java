@@ -31,6 +31,7 @@ public class Company {
         Car carTmp = new Car(name, speed, weight, color, wheelsCount);
         //Добавляем объект в список
         carList.add(carTmp);
+        System.out.println("Транспортное средство добавлено");
     }
     //Метод, добавляющий новое транспортное средство в список - экспресс
     public void addExpress(String name, int speed, int weight, String color, int railCount, String expressType) {
@@ -38,6 +39,7 @@ public class Company {
         Express expressTmp = new Express(name, speed, weight, color, railCount, expressType);
         //Добавляем объект в список
         expressList.add(expressTmp);
+        System.out.println("Транспортное средство добавлено");
     }
 
     public void randomVehicles(int count) {
@@ -71,7 +73,7 @@ public class Company {
                     weight = rnd.nextInt(1000) + 2000;
                     color = "синий";
                     wheelsCount = rnd.nextInt(4) + 2;
-                    expressType = rnd.nextInt(2) == 0 ? "Междугородний" : "Региональный";;
+                    expressType = rnd.nextInt(2) == 0 ? "Междугородний" : "Региональный";
                     railCount = 2;
 
                     //Создаем объект класса Express
@@ -92,14 +94,21 @@ public class Company {
         return expressList;
     }
     //Метод поиска транспортного средства
-    public String findVehicle(String name) {
-        //Результат работы функции
-        String result = "";
+    public Vehicle findVehicle(String name, String type) {
         //Объект для хранения необходимого транспортного средства
         Vehicle vehicle = null;
-        
+
+        ArrayList<Vehicle> list = null;
+
+        if (type.equals("CARS")) {
+            list = carList;
+        } else if (type.equals("EXPRESS")) {
+            list = expressList;
+        }
+
         //Переберем список
-        for(Vehicle vehicleTmp : carList) {
+        assert list != null;
+        for(Vehicle vehicleTmp : list) {
             //Получим имя, полученного объекта
             String nameTmp = vehicleTmp.getName();
             //Если имена совпали, то
@@ -108,41 +117,32 @@ public class Company {
                 vehicle = vehicleTmp;
             }
         }
-        
-        //Если объект не найден, то
-        if (vehicle == null) {
-            //Выведем информцаию о этом
-            return "Не найдено";
-        }
-        
-        //Получим информацию
-        result += "\r\nНазвание: " + vehicle.getName() + "\r\n";
-        result += "Скорость: " + vehicle.getSpeed() + " км/ч\r\n";
-        result += "Вес: " + vehicle.getSpeed() + " кг\r\n";
-        result += "Цвет: " + vehicle.getColor() + "\r\n";
-        result += "Максимальная нагрузка: " + vehicle.getLoad() + "\r\n";
 
-        //Если это объект класса Express
-        if (vehicle instanceof Express) {
-            //Приведем тип к Express
-            result += "Тип экспресса " + ((Express) vehicle).getType() + "\r\n";
-        }
-        
-        return result;
+        return vehicle;
     } 
     //Метод удаления транспортного средства
-    public void deleteVehicle(String name) {
+    public void deleteVehicle(String name, String type) {
         boolean isFind = false;
         int index = 0;
+
+        ArrayList<Vehicle> list = null;
+
+        if (type.equals("CARS")) {
+            list = carList;
+        } else if (type.equals("EXPRESS")) {
+            list = expressList;
+        }
+
         
         //Переберем список
-        for(Vehicle vehicleTmp : carList) {
+        assert list != null;
+        for(Vehicle vehicleTmp : list) {
             //Получим имя, полученного объекта
             String nameTmp = vehicleTmp.getName();
             //Если имена совпали, то
             if (nameTmp.equals(name)) {
                 //Получаем номер наденного объекта
-                index = carList.indexOf(vehicleTmp);
+                index = list.indexOf(vehicleTmp);
                 //Ставим флаг, что найдено
                 isFind = true;
             }
@@ -150,7 +150,7 @@ public class Company {
         
         if (isFind) {
             //Удалить полученный объект
-            carList.remove(index);
+            list.remove(index);
             System.out.println("Транспортное средство удалено");
         } else {
             System.out.println("Транспортное средство не найдено");

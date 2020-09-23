@@ -1,7 +1,11 @@
 package lab5_10;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,28 +14,47 @@ import java.util.Vector;
 
 public class ListPanel extends JPanel {
 
-    int buttonCount = 0;
-    JPanel tablePanel = new JPanel();
-    static JTable carsTable = new JTable();
-    JTable expressTable = new JTable();
+    //Необходимые поля
+    private int buttonCount = 0;
+    private final JPanel tablePanel = new JPanel();
+    private static final JTable carsTable = new JTable();
+    private static final JTable expressTable = new JTable();
+    private final JTextField carsTableFilterTextField = new JTextField();
+    private final JTextField expressTableFilterTextField = new JTextField();
+    private JRadioButton carsRadioButton;
+    private JRadioButton expressRadioButton;
+    private static int activeTable;
 
+    //Констркутор
     public ListPanel() {
         initPanel();
         addElementsToPanel(this);
     }
 
+    public static int getActiveTable() {
+        return activeTable;
+    }
+
+    public static JTable getCarsTable() {
+        return carsTable;
+    }
+
+    public static JTable getExpressTable() {
+        return expressTable;
+    }
+
+    //Метод задающий стандартные настройки для панели
     private void initPanel() {
         setBackground(Color.decode("#ffffff"));
         setVisible(true);
 
         AppGUI.initCom();
     }
-
+    //Метод добавляющий элементы на панель
     private void addElementsToPanel(Container pane) {
         JButton button;
         JPanel panel;
         JLabel label;
-        JRadioButton radioButton;
         Font font;
         ButtonGroup buttonGroup;
 
@@ -57,8 +80,8 @@ public class ListPanel extends JPanel {
         pane.add(label, c);
 
         tablePanel.setLayout(new CardLayout(0, 0));
-        tablePanel.add(setTable("CARS", carsTable), "CarsTable");
-        tablePanel.add(setTable("EXPRESS", expressTable), "ExpressTable");
+        tablePanel.add(addTableToPanel("CARS", carsTable), "CarsTable");
+        tablePanel.add(addTableToPanel("EXPRESS", expressTable), "ExpressTable");
         tablePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         c.fill = GridBagConstraints.BOTH;
@@ -79,28 +102,12 @@ public class ListPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) AppGUI.contentPane.getLayout();
-                cardLayout.show(AppGUI.contentPane, "Add");
+                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                cardLayout.show(AppGUI.getCardPane(), "Add");
             }
         });
         setButtonSetting(button);
         setLayoutSetting(c);
-
-        panel.add(button, c);
-
-        button = new JButton("Найти");
-        setButtonSetting(button);
-        setLayoutSetting(c);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ArrayList<Vehicle> list = AppGUI.getCarsList();
-                Object[] elem = list.get(list.size() - 1).getObject();
-                String msg = (String) elem[0];
-
-                JOptionPane.showMessageDialog(AppGUI.generalListPanel, msg);
-            }
-        });
 
         panel.add(button, c);
 
@@ -109,55 +116,90 @@ public class ListPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) AppGUI.contentPane.getLayout();
-                cardLayout.show(AppGUI.contentPane, "Menu");
+                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                cardLayout.show(AppGUI.getCardPane(), "Menu");
             }
         });
         setLayoutSetting(c);
 
         panel.add(button, c);
 
+        //Поиск
+
+        label = new JLabel("Поиск:");
+        c.insets = new Insets(10,20,0,20);
+        c.gridx = 0;
+        c.gridy = 3;
+
+        panel.add(label, c);
+
+        c.insets = new Insets(0,20,0,20);
+        c.gridx = 0;
+        c.gridy = 4;
+        addSortToPane();
+        panel.add(carsTableFilterTextField, c);
+
+        expressTableFilterTextField.setVisible(false);
+        panel.add(expressTableFilterTextField, c);
+
+        carsTable.addMouseListener(new PopClickListener());
+
         buttonGroup = new ButtonGroup();
 
-        radioButton = new JRadioButton("Автомобили", true);
-        radioButton.setBackground(Color.decode("#ffffff"));
-        radioButton.setHorizontalAlignment(SwingConstants.LEFT);
-        radioButton.addActionListener(new ActionListener() {
+        carsRadioButton = new JRadioButton("Автомобили", true);
+        carsRadioButton.setBackground(Color.decode("#ffffff"));
+        carsRadioButton.setHorizontalAlignment(SwingConstants.LEFT);
+        carsRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CardLayout cardLayout = (CardLayout) tablePanel.getLayout();
                 cardLayout.show(tablePanel, "CarsTable");
+                carsTableFilterTextField.setVisible(true);
+                expressTableFilterTextField.setVisible(false);
+                carsTable.addMouseListener(new PopClickListener());
+                activeTable = 0;
             }
         });
-        buttonGroup.add(radioButton);
+        buttonGroup.add(carsRadioButton);
+
+        label = new JLabel("Выберете таблицу:");
+        c.insets = new Insets(10,20,0,20);
+        c.gridx = 0;
+        c.gridy = 5;
+
+        panel.add(label, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTH;
-        c.insets = new Insets(40,20,0,20);
+        c.insets = new Insets(0,20,0,20);
         c.gridx = 0;
-        c.gridy = 3;
+        c.gridy = 6;
 
-        panel.add(radioButton, c);
+        panel.add(carsRadioButton, c);
 
-        radioButton = new JRadioButton("Экспрессы", false);
-        radioButton.setBackground(Color.decode("#ffffff"));
-        radioButton.setHorizontalAlignment(SwingConstants.LEFT);
-        radioButton.addActionListener(new ActionListener() {
+        expressRadioButton = new JRadioButton("Экспрессы", false);
+        expressRadioButton.setBackground(Color.decode("#ffffff"));
+        expressRadioButton.setHorizontalAlignment(SwingConstants.LEFT);
+        expressRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CardLayout cardLayout = (CardLayout) tablePanel.getLayout();
                 cardLayout.show(tablePanel, "ExpressTable");
+                carsTableFilterTextField.setVisible(false);
+                expressTableFilterTextField.setVisible(true);
+                expressTable.addMouseListener(new PopClickListener());
+                activeTable = 1;
             }
         });
-        buttonGroup.add(radioButton);
+        buttonGroup.add(expressRadioButton);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTH;
-        c.insets = new Insets(40,20,0,20);
+        c.insets = new Insets(0,20,0,20);
         c.gridx = 0;
-        c.gridy = 4;
+        c.gridy = 7;
 
-        panel.add(radioButton, c);
+        panel.add(expressRadioButton, c);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -169,23 +211,14 @@ public class ListPanel extends JPanel {
 
         pane.add(panel, c);
     }
-
-    public void showPanel() {
-        setVisible(true);
-    }
-
-    public void hidePanel() {
-        setVisible(false);
-    }
-
+    //Метод, задающий базовые параметры для кнопки
     private void setButtonSetting(JButton button) {
         button.setBorderPainted(false);
         button.setFocusPainted(false);
         button.setForeground(Color.WHITE);
         button.setBackground(Color.decode("#7ebc59"));
-        //button.setAlignmentX(Component.CENTER_ALIGNMENT);
     }
-
+    //Метод, задающий базовые параметры для кнопки
     private void setLayoutSetting(GridBagConstraints constraints) {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.anchor = GridBagConstraints.NORTH;
@@ -196,10 +229,15 @@ public class ListPanel extends JPanel {
 
         buttonCount++;
     }
+    //Метод, добавляющий таблицу на панель
+    private JPanel addTableToPanel(String typeName, JTable table) {
 
-    private JPanel setTable(String typeName, JTable table) {
-
-        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int i, int i1) {
+                return false;
+            }
+        };
 
         int type = 0;
 
@@ -229,7 +267,7 @@ public class ListPanel extends JPanel {
         }
 
         for (Object headerName: columnsHeader) {
-            model.addColumn((String) headerName);
+            model.addColumn(headerName);
         }
 
         for (Vehicle vehicle : vehiclesList) {
@@ -262,15 +300,86 @@ public class ListPanel extends JPanel {
 
         return pane;
     }
-
+    //Метод, добавляющий в таблицу строку
     public void addCar(String name, int speed, int weight, String color, int wheelsCount) {
         DefaultTableModel model = (DefaultTableModel) carsTable.getModel();
         model.addRow(new Object[]{name, speed, weight, color, wheelsCount});
     }
-
+    //Метод, добавляющий в таблицу строку
     public void addExpress(String name, int speed, int weight, String color, int railsCount, String expressType) {
-        DefaultTableModel model = (DefaultTableModel) carsTable.getModel();
+        DefaultTableModel model = (DefaultTableModel) expressTable.getModel();
         model.addRow(new Object[]{name, speed,weight, color, railsCount, expressType});
+    }
+
+    public void addSortToPane() {
+
+        TableRowSorter<TableModel> carsRowSorter = new TableRowSorter<>(carsTable.getModel());
+        TableRowSorter<TableModel> expressRowSorter = new TableRowSorter<>(expressTable.getModel());
+
+        carsTable.setRowSorter(carsRowSorter);
+        expressTable.setRowSorter(expressRowSorter);
+
+        //noinspection DuplicatedCode
+        carsTableFilterTextField.getDocument().addDocumentListener(new DocumentListener(){
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                String text = carsTableFilterTextField.getText();
+
+                if (text.trim().length() == 0) {
+                    carsRowSorter.setRowFilter(null);
+                } else {
+                    carsRowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                String text = carsTableFilterTextField.getText();
+
+                if (text.trim().length() == 0) {
+                    carsRowSorter.setRowFilter(null);
+                } else {
+                    carsRowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+
+        //noinspection DuplicatedCode
+        expressTableFilterTextField.getDocument().addDocumentListener(new DocumentListener(){
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                String text = expressTableFilterTextField.getText();
+
+                if (text.trim().length() == 0) {
+                    expressRowSorter.setRowFilter(null);
+                } else {
+                    expressRowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                String text = expressTableFilterTextField.getText();
+
+                if (text.trim().length() == 0) {
+                    expressRowSorter.setRowFilter(null);
+                } else {
+                    expressRowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
     }
 
 }

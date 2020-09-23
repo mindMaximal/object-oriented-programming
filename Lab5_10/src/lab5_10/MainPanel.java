@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainPanel extends JPanel {
-
     //Количество кнопок на панели
     private int buttonCount = 0;
 
@@ -39,8 +38,8 @@ public class MainPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) AppGUI.contentPane.getLayout();
-                cardLayout.show(AppGUI.contentPane, "List");
+                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                cardLayout.show(AppGUI.getCardPane(), "List");
             }
         });
         //Добавим кнопку в контейнер
@@ -56,8 +55,8 @@ public class MainPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) AppGUI.contentPane.getLayout();
-                cardLayout.show(AppGUI.contentPane, "Add");
+                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                cardLayout.show(AppGUI.getCardPane(), "Add");
             }
         });
         //Добавим кнопку в контейнер
@@ -73,7 +72,9 @@ public class MainPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setBackground(Color.RED);
+                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                cardLayout.show(AppGUI.getCardPane(), "List");
+                JOptionPane.showMessageDialog(null, "Для того чтобы удалить транспортное средство\r\nнайдите его в списке, нажмите правкую кнопку и выберете \"Удалить\"", "Удаление транспортного средства", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         //Добавим кнопку в контейнер
