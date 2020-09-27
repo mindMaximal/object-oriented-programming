@@ -8,17 +8,21 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.font.TextAttribute;
 import java.math.BigDecimal;
 
 public class AddPanel extends JPanel {
     //Создаем переменные для элементов
     private static JLabel[] labelArray;
     private static JTextField[] textFields;
+    private static JPanel[] labelPanels;
+    private static JLabel[] supportLabels;
     private static JRadioButton[] radioButtons;
     private static boolean isEditing = false;
     private static Vehicle vehicle;
-    private static int rowEditing;
-    private static int columnEditing;
+    private static Integer rowEditing = null;
+    private static Integer columnEditing = null;
 
     //Конструктор
     public AddPanel() {
@@ -27,17 +31,30 @@ public class AddPanel extends JPanel {
         setValidation();
     }
 
-    public static void setCellPos(int row, int column) {
+    public static void setCellPos(Integer row, Integer column) {
         rowEditing = row;
         columnEditing = column;
     }
 
-    public static int getRow() {
+    public static Integer getRow() {
         return rowEditing;
     }
 
     public static int getColumn() {
         return columnEditing;
+    }
+
+    public static void clearFields() {
+
+        isEditing = false;
+
+        for (JTextField textField : textFields) textField.setText("");
+
+        for (JLabel label : supportLabels) {
+            label.setText("");
+        }
+
+        System.out.println("Поля очищены");
     }
 
     //Метод добавляющий элементы на панель
@@ -104,6 +121,7 @@ public class AddPanel extends JPanel {
 
         label = new JLabel("Добавить:");
         label.setHorizontalAlignment(JLabel.LEFT);
+
         c.gridx = 0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -117,24 +135,45 @@ public class AddPanel extends JPanel {
         };
         labelArray = new JLabel[labelNames.length];
         textFields = new JTextField[labelNames.length];
+        supportLabels = new JLabel[labelNames.length];
+        labelPanels = new JPanel[labelNames.length];
 
         for (int i = 0; i < labelNames.length; i++) {
             labelArray[i] = new JLabel(labelNames[i]);
             textFields[i] = new JTextField();
-            c.weightx = 0.5;
-            c.gridx = (i + 2) % 2;
-            c.gridy = (i + 2) - ( (i + 2) % 2 );
-            labelArray[i].setBackground(Color.BLACK);
+            labelPanels[i] = new JPanel();
+            supportLabels[i] = new JLabel();
 
             if (i == 5) {
                 labelArray[i].setVisible(false);
                 textFields[i].setVisible(false);
             }
 
-            panel.add(labelArray[i], c);
+            labelPanels[i].setLayout(new FlowLayout(FlowLayout.LEFT));
+            labelPanels[i].setBackground(Color.decode("#ffffff"));
+
+            labelPanels[i].add(labelArray[i], c);
+
+            supportLabels[i].setHorizontalAlignment(SwingConstants.RIGHT);
+            supportLabels[i].setForeground(Color.RED);
+
+            c.fill = GridBagConstraints.LINE_START;
+            c.weightx = 1;
+
+            labelPanels[i].setPreferredSize(new Dimension(300,20));
+            labelPanels[i].add(supportLabels[i], c);
+
+            c.fill = GridBagConstraints.HORIZONTAL;
+            c.insets = new Insets(10,20,0,20);
+            c.weightx = 1;
+            c.gridx = (i + 2) % 2;
+            c.gridy = (i + 2) - ( (i + 2) % 2 );
+
+            panel.add(labelPanels[i], c);
 
             c.gridy = (i + 2) - ( (i + 2) % 2 ) + 1;
             panel.add(textFields[i], c);
+
         }
 
         button = new JButton("Отправить");
@@ -143,56 +182,99 @@ public class AddPanel extends JPanel {
         button.setForeground(Color.WHITE);
         button.setBackground(Color.decode("#7ebc59"));
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.addActionListener(e -> {
+        button.addActionListener((ActionEvent e) -> {
+
+            String msg = "Пожалуйста, заполните все поля";
 
             if(isEditing) {
 
-                if (radioButtons[0].isSelected()) {
-                    AppGUI.updateVehicle(
-                            vehicle.getName(),
-                            textFields[0].getText(),
-                            Integer.parseInt(textFields[1].getText()),
-                            Integer.parseInt(textFields[2].getText()),
-                            textFields[3].getText(),
-                            Integer.parseInt(textFields[4].getText())
-                    );
-                } else if(radioButtons[1].isSelected()) {
-                    AppGUI.updateVehicle(
-                            vehicle.getName(),
-                            textFields[0].getText(),
-                            Integer.parseInt(textFields[1].getText()),
-                            Integer.parseInt(textFields[2].getText()),
-                            textFields[3].getText(),
-                            Integer.parseInt(textFields[4].getText()),
-                            textFields[5].getText()
-                    );
+                try {
+                    if (radioButtons[0].isSelected()) {
+
+                        String oldName = vehicle.getName();
+                        String name = textFields[0].getText();
+                        int speed = Integer.parseInt(textFields[1].getText());
+                        int weight = Integer.parseInt(textFields[2].getText());
+                        String color = textFields[3].getText();
+                        int wheelsCount = Integer.parseInt(textFields[4].getText());
+
+                        if (isEmpty(oldName) || isEmpty(name) || isEmpty(color)) {
+                            JOptionPane.showMessageDialog(null, msg,"Ошибка", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            AppGUI.updateVehicle(oldName, name, speed, weight, color, wheelsCount);
+
+                            CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                            cardLayout.show(AppGUI.getCardPane(), "List");
+                        }
+
+                    } else if(radioButtons[1].isSelected()) {
+                        String oldName = vehicle.getName();
+                        String name = textFields[0].getText();
+                        int speed = Integer.parseInt(textFields[1].getText());
+                        int weight = Integer.parseInt(textFields[2].getText());
+                        String color = textFields[3].getText();
+                        int railsCount = Integer.parseInt(textFields[4].getText());
+                        String expressType = textFields[5].getText();
+
+                        if (isEmpty(oldName) || isEmpty(name) || isEmpty(color) || isEmpty(expressType)) {
+                            JOptionPane.showMessageDialog(null, msg,"Ошибка", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            AppGUI.updateVehicle(oldName, name, speed, weight, color, railsCount, expressType);
+
+                            CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                            cardLayout.show(AppGUI.getCardPane(), "List");
+                        }
+                    }
+
+
+                } catch (NumberFormatException  error){
+                    JOptionPane.showMessageDialog(null, msg,"Ошибка", JOptionPane.ERROR_MESSAGE);
+                    System.out.printf("Ошибка %s%n", error);
                 }
 
-                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
-                cardLayout.show(AppGUI.getCardPane(), "List");
             } else {
 
-                if (radioButtons[0].isSelected()) {
-                    AppGUI.addCar(
-                            textFields[0].getText(),
-                            Integer.parseInt(textFields[1].getText()),
-                            Integer.parseInt(textFields[2].getText()),
-                            textFields[3].getText(),
-                            Integer.parseInt(textFields[4].getText())
-                    );
-                } else if(radioButtons[1].isSelected()) {
-                    AppGUI.addExpress(
-                            textFields[0].getText(),
-                            Integer.parseInt(textFields[1].getText()),
-                            Integer.parseInt(textFields[2].getText()),
-                            textFields[3].getText(),
-                            Integer.parseInt(textFields[4].getText()),
-                            textFields[5].getText()
-                    );
-                }
+                try {
 
-                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
-                cardLayout.show(AppGUI.getCardPane(), "List");
+                    if (radioButtons[0].isSelected()) {
+
+                        String name = textFields[0].getText();
+                        int speed = Integer.parseInt(textFields[1].getText());
+                        int weight = Integer.parseInt(textFields[2].getText());
+                        String color = textFields[3].getText();
+                        int wheelsCount = Integer.parseInt(textFields[4].getText());
+
+                        if (isEmpty(name) || isEmpty(color)) {
+                            JOptionPane.showMessageDialog(null, msg,"Ошибка", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            AppGUI.addVehicle(name, speed, weight, color, wheelsCount);
+
+                            CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                            cardLayout.show(AppGUI.getCardPane(), "List");
+                        }
+
+                    } else if(radioButtons[1].isSelected()) {
+                        String name = textFields[0].getText();
+                        int speed = Integer.parseInt(textFields[1].getText());
+                        int weight = Integer.parseInt(textFields[2].getText());
+                        String color = textFields[3].getText();
+                        int railsCount = Integer.parseInt(textFields[4].getText());
+                        String expressType = textFields[5].getText();
+
+                        if (isEmpty(name) || isEmpty(color) || isEmpty(expressType)) {
+                            JOptionPane.showMessageDialog(null, msg,"Ошибка", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            AppGUI.addVehicle(name, speed, weight, color, railsCount, expressType);
+
+                            CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                            cardLayout.show(AppGUI.getCardPane(), "List");
+                        }
+                    }
+
+                } catch (NumberFormatException  error){
+                    JOptionPane.showMessageDialog(null, msg,"Ошибка", JOptionPane.ERROR_MESSAGE);
+                    System.out.printf("Ошибка %s%n", error);
+                }
 
             }
 
@@ -272,18 +354,51 @@ public class AddPanel extends JPanel {
 
     private void setValidation() {
 
-        PlainDocument doc = (PlainDocument) textFields[0].getDocument();
-        doc.setDocumentFilter(new DigitFilter());
+        PlainDocument doc;
+
+        String numPattern = "^$|[\\d\\s^$]+";
+        String strPattern = "^$|[a-zA-Z а-яёА-ЯЁ^$]+";
+
+        String msg = "вводите только цифры";
+
+        doc = (PlainDocument) textFields[1].getDocument();
+        doc.setDocumentFilter(new DigitFilter(numPattern, supportLabels[1], msg));
+
+        doc = (PlainDocument) textFields[2].getDocument();
+        doc.setDocumentFilter(new DigitFilter(numPattern, supportLabels[2], msg));
+
+        doc = (PlainDocument) textFields[4].getDocument();
+        doc.setDocumentFilter(new DigitFilter(numPattern, supportLabels[4], msg));
+
+        msg = "вводите только слова";
+
+        doc = (PlainDocument) textFields[3].getDocument();
+        doc.setDocumentFilter(new DigitFilter(strPattern, supportLabels[3], msg));
     }
 
-    static class DigitFilter extends DocumentFilter {
-        private static final String DIGITS = "\\d+";
+    private boolean isEmpty(String str) {
+        return str == null || str.isEmpty() || str.trim().length() == 0;
+    }
+
+    class DigitFilter extends DocumentFilter {
+        private final String DIGITS;
+        private final JLabel label;
+        private String msg = "";
+
+        public DigitFilter(String DIGITS, JLabel label, String msg) {
+            this.DIGITS = DIGITS;
+            this.label = label;
+            this.msg = msg;
+        }
 
         @Override
-        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException, BadLocationException {
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
 
             if (string.matches(DIGITS)) {
                 super.insertString(fb, offset, string, attr);
+                label.setText("");
+            } else {
+                label.setText(msg);
             }
         }
 
@@ -291,8 +406,13 @@ public class AddPanel extends JPanel {
         public void replace(FilterBypass fb, int offset, int length, String string, AttributeSet attrs) throws BadLocationException {
             if (string.matches(DIGITS)) {
                 super.replace(fb, offset, length, string, attrs);
+                label.setText("");
+            } else {
+                label.setText(msg);
             }
         }
+
+
     }
 
 }

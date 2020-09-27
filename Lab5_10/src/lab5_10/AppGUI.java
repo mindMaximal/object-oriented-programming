@@ -92,14 +92,14 @@ public class AppGUI extends JFrame {
         return com.getExpressList();
     }
 
-    public static void addExpress(String name, int speed, int weight, String color, int railsCount, String expressType) {
+    public static void addVehicle(String name, int speed, int weight, String color, int railsCount, String expressType) {
         com.addExpress(name, speed,weight, color, railsCount, expressType);
-        listPanel.addExpress(name, speed,weight, color, railsCount, expressType);
+        listPanel.addVehicle(name, speed,weight, color, railsCount, expressType);
     }
 
-    public static void addCar(String name, int speed, int weight, String color, int wheelsCount) {
+    public static void addVehicle(String name, int speed, int weight, String color, int wheelsCount) {
         com.addCar(name, speed,weight, color, wheelsCount);
-        listPanel.addCar(name, speed,weight, color, wheelsCount);
+        listPanel.addVehicle(name, speed,weight, color, wheelsCount);
     }
 
     public static JPanel getCardPane() {
@@ -114,6 +114,10 @@ public class AppGUI extends JFrame {
         return com.findVehicle(name, type);
     }
 
+    public static Vehicle findVehicle(String name) {
+        return com.findVehicle(name);
+    }
+
     public static void updateVehicle(String oldName, String name, int speed, int weight, String color, int wheelsCount) {
         com.updateVehicle(oldName, name, speed, weight, color, wheelsCount);
         listPanel.updateData(oldName, name, speed, weight, color, wheelsCount);
@@ -123,4 +127,5 @@ public class AppGUI extends JFrame {
         com.updateVehicle(oldName, name, speed, weight, color, railsCount, expressType);
         listPanel.updateData(oldName, name, speed, weight, color, railsCount, expressType);
     }
+
 }

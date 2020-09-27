@@ -54,7 +54,7 @@ public class PopUp  extends JPopupMenu {
                     model.removeRow(row);
                 }
             });
-        } catch (IllegalAccessError eror) {
+        } catch (IllegalAccessError error) {
             System.out.println("Строка не выбрана");
         }
 

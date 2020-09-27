@@ -99,12 +99,11 @@ public class ListPanel extends JPanel {
         panel.setLayout(new GridBagLayout());
 
         button = new JButton("Добавить");
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
-                cardLayout.show(AppGUI.getCardPane(), "Add");
-            }
+        button.addActionListener(e -> {
+            AddPanel.clearFields();
+
+            CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+            cardLayout.show(AppGUI.getCardPane(), "Add");
         });
         setButtonSetting(button);
         setLayoutSetting(c);
@@ -301,12 +300,12 @@ public class ListPanel extends JPanel {
         return pane;
     }
     //Метод, добавляющий в таблицу строку
-    public void addCar(String name, int speed, int weight, String color, int wheelsCount) {
+    public void addVehicle(String name, int speed, int weight, String color, int wheelsCount) {
         DefaultTableModel model = (DefaultTableModel) carsTable.getModel();
         model.addRow(new Object[]{name, speed, weight, color, wheelsCount});
     }
     //Метод, добавляющий в таблицу строку
-    public void addExpress(String name, int speed, int weight, String color, int railsCount, String expressType) {
+    public void addVehicle(String name, int speed, int weight, String color, int railsCount, String expressType) {
         DefaultTableModel model = (DefaultTableModel) expressTable.getModel();
         model.addRow(new Object[]{name, speed,weight, color, railsCount, expressType});
     }
@@ -383,21 +382,64 @@ public class ListPanel extends JPanel {
     }
 
     public void updateData(String oldName, String name, int speed, int weight, String color, int wheelsCount) {
+
         DefaultTableModel model = (DefaultTableModel) carsTable.getModel();
-        model.setValueAt(name, AddPanel.getRow(), 0);
-        model.setValueAt(speed, AddPanel.getRow(), 1);
-        model.setValueAt(weight, AddPanel.getRow(), 2);
-        model.setValueAt(color, AddPanel.getRow(), 3);
-        model.setValueAt(wheelsCount, AddPanel.getRow(), 4);
+
+        Integer row = AddPanel.getRow();
+
+        if (row == null) {
+            var vector = model.getDataVector();
+
+            for (int i = 0, vectorSize = vector.size(); i < vectorSize; i++) {
+                var vectorTmp = vector.get(i);
+                String nameTmp = vectorTmp.get(0).toString();
+
+                if (oldName.equals(nameTmp)) row = i;
+            }
+        }
+
+        System.out.print(row);
+
+        try {
+            model.setValueAt(name, row, 0);
+            model.setValueAt(speed, row, 1);
+            model.setValueAt(weight, row, 2);
+            model.setValueAt(color, row, 3);
+            model.setValueAt(wheelsCount, row, 4);
+        } catch (NullPointerException error) {
+            System.out.println(error);
+        }
     }
 
     public void updateData(String oldName, String name, int speed, int weight, String color, int railsCount, String expressType) {
+
         DefaultTableModel model = (DefaultTableModel) expressTable.getModel();
-        model.setValueAt(name, AddPanel.getRow(), 0);
-        model.setValueAt(speed, AddPanel.getRow(), 1);
-        model.setValueAt(weight, AddPanel.getRow(), 2);
-        model.setValueAt(color, AddPanel.getRow(), 3);
-        model.setValueAt(railsCount, AddPanel.getRow(), 4);
-        model.setValueAt(expressType, AddPanel.getRow(), 5);
+
+        Integer row = AddPanel.getRow();
+
+        if (row == null) {
+            var vector = model.getDataVector();
+
+            for (int i = 0, vectorSize = vector.size(); i < vectorSize; i++) {
+                var vectorTmp = vector.get(i);
+                String nameTmp = vectorTmp.get(0).toString();
+
+                if (oldName.equals(nameTmp)) row = i;
+            }
+        }
+
+        JOptionPane.showMessageDialog(null, "Поправь");
+
+        try {
+            model.setValueAt(name, row, 0);
+            model.setValueAt(speed, row, 1);
+            model.setValueAt(weight, row, 2);
+            model.setValueAt(color, row, 3);
+            model.setValueAt(railsCount, row, 4);
+            model.setValueAt(expressType, row, 5);
+        } catch (NullPointerException error) {
+            System.out.println(error);
+        }
+
     }
 }

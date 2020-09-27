@@ -119,7 +119,35 @@ public class Company {
         }
 
         return vehicle;
-    } 
+    }
+
+    public Vehicle findVehicle(String name) {
+        Vehicle vehicle = null;
+
+        for (Vehicle vehicleTmp : carList) {
+            //Получим имя, полученного объекта
+            String nameTmp = vehicleTmp.getName();
+            //Если имена совпали, то
+            if (nameTmp.equals(name)) {
+                //Записываем полученный объект
+                vehicle = vehicleTmp;
+            }
+        }
+
+        if (vehicle == null) {
+            for (Vehicle vehicleTmp : expressList) {
+                //Получим имя, полученного объекта
+                String nameTmp = vehicleTmp.getName();
+                //Если имена совпали, то
+                if (nameTmp.equals(name)) {
+                    //Записываем полученный объект
+                    vehicle = vehicleTmp;
+                }
+            }
+        }
+
+        return vehicle;
+    }
     //Метод удаления транспортного средства
     public void deleteVehicle(String name, String type) {
         boolean isFind = false;
@@ -196,4 +224,5 @@ public class Company {
             vehicle.updateVehicle(object);
         }
     }
+
 }

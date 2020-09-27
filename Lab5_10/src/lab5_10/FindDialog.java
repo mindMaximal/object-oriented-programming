@@ -3,12 +3,16 @@ package lab5_10;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class FindDialog extends JDialog {
     //Создаем toolkit для работы его методами
-    Toolkit toolkit = Toolkit.getDefaultToolkit();
+    private final Toolkit toolkit = Toolkit.getDefaultToolkit();
     //Получаем размеры экрана
-    Dimension screen = toolkit.getScreenSize();
+    private final Dimension screen = toolkit.getScreenSize();
+    private JTextField textField;
+    private JRadioButton[] radioButtons;
 
     public FindDialog() {
         initDialog();
@@ -33,13 +37,19 @@ public class FindDialog extends JDialog {
         setLayout(new GridBagLayout());
     }
 
+    public JTextField getTextField() {
+        return textField;
+    }
+
+    public JRadioButton[] getRadioButtons() {
+        return radioButtons;
+    }
+
     private void addComponentsToPane(Container pane) {
-        JTextField textField;
-        JLabel label;
         GridBagConstraints c = new GridBagConstraints();
         ButtonGroup buttonGroup = new ButtonGroup();
-        JRadioButton radioButton;
         JButton button;
+        JLabel label;
         JPanel panel;
 
         label = new JLabel("Поиск по:");
@@ -59,14 +69,15 @@ public class FindDialog extends JDialog {
         panel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         panel.setBackground(Color.decode("#ffffff"));
 
+        radioButtons = new JRadioButton[radioButtonNames.length];
 
         for (int i = 0; i < radioButtonNames.length; i++) {
             boolean selected = i == (radioButtonNames.length - 1);
-            radioButton = new JRadioButton(radioButtonNames[i], selected);
-            radioButton.setBackground(Color.decode("#ffffff"));
-            radioButton.setHorizontalAlignment(SwingConstants.CENTER);
-            buttonGroup.add(radioButton);
-            panel.add(radioButton, c);
+            radioButtons[i] = new JRadioButton(radioButtonNames[i], selected);
+            radioButtons[i].setBackground(Color.decode("#ffffff"));
+            radioButtons[i].setHorizontalAlignment(SwingConstants.CENTER);
+            buttonGroup.add(radioButtons[i]);
+            panel.add(radioButtons[i], c);
         }
 
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -118,6 +129,7 @@ public class FindDialog extends JDialog {
         button.setBackground(Color.decode("#7ebc59"));
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setBorder(BorderFactory.createEmptyBorder(10, 50, 10, 50));
+        button.addActionListener(new FindVehicle());
 
         panel.add(button);
         pane.add(panel, c);
@@ -126,5 +138,38 @@ public class FindDialog extends JDialog {
 
     public void showDialog() {
         setVisible(true);
+    }
+
+    private class FindVehicle implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            String name = getTextField().getText();
+
+            Vehicle vehicle;
+
+            if (radioButtons[0].isSelected()) {
+                vehicle = AppGUI.findVehicle(name, "CARS");
+            } else if (radioButtons[1].isSelected()) {
+                vehicle = AppGUI.findVehicle(name, "EXPRESS");
+            } else {
+                vehicle = AppGUI.findVehicle(name);
+            }
+
+            if (vehicle == null) {
+                JOptionPane.showMessageDialog(null, "Поиск не дал результатов");
+            } else {
+                AddPanel.setCellPos(null, null);
+
+                AddPanel.fillFields(vehicle);
+
+                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+                cardLayout.show(AppGUI.getCardPane(), "Add");
+
+                dispose();
+            }
+
+        }
     }
 }

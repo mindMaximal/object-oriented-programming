@@ -55,6 +55,8 @@ public class MainPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AddPanel.clearFields();
+
                 CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
                 cardLayout.show(AppGUI.getCardPane(), "Add");
             }
@@ -119,14 +121,6 @@ public class MainPanel extends JPanel {
         constraints.gridy = buttonCount;
 
         buttonCount++;
-    }
-
-    public void showPanel() {
-        setVisible(true);
-    }
-
-    public void hidePanel() {
-        setVisible(false);
     }
 
 }
