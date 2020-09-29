@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.util.Vector;
 
 public class PopUp  extends JPopupMenu {
     JMenuItem menuItem;
@@ -18,7 +19,9 @@ public class PopUp  extends JPopupMenu {
             int row = table.rowAtPoint(e.getPoint());
             DefaultTableModel model = (DefaultTableModel) table.getModel();
 
-            String name = model.getDataVector().elementAt(row).firstElement().toString();
+            Vector element = (Vector) model.getDataVector().elementAt(row);
+
+            String name = element.get(0).toString();
 
             Vehicle vehicle = AppGUI.findVehicle(name, activeTable == 0 ? "CARS" : "EXPRESS");
 
@@ -48,7 +51,10 @@ public class PopUp  extends JPopupMenu {
 
                 if(dialogResult == JOptionPane.YES_OPTION){
                     DefaultTableModel model = (DefaultTableModel) table.getModel();
-                    String name = model.getDataVector().elementAt(row).firstElement().toString();
+
+                    Vector element = (Vector) model.getDataVector().elementAt(row);
+
+                    String name = element.get(0).toString();
 
                     AppGUI.deleteVehicle(name, activeTable == 0 ? "CARS" : "EXPRESS");
 

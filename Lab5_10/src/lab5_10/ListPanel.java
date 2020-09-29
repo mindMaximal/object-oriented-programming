@@ -271,11 +271,11 @@ public class ListPanel extends JPanel {
         Object[] columnsHeader;
         // Заголовки столбцов
         if (type == 1) {
-            columnsHeader = new String[] {"Название", "Скорость",
-                    "Вес", "Цвет","Количество колес"};
+            columnsHeader = new String[] {"Название", "Скорость, км/ч",
+                    "Вес, кг", "Цвет","Количество колес, шт"};
         } else {
-            columnsHeader = new String[] {"Название", "Скорость",
-                    "Вес", "Цвет","Количество баз", "Тип экспресса"};
+            columnsHeader = new String[] {"Название", "Скорость, км/ч",
+                    "Вес, кг", "Цвет","Количество баз, шт", "Тип экспресса"};
         }
 
         for (Object headerName: columnsHeader) {
@@ -401,10 +401,10 @@ public class ListPanel extends JPanel {
         Integer row = AddPanel.getRow();
 
         if (row == null) {
-            var vector = model.getDataVector();
+            Vector vector = model.getDataVector();
 
             for (int i = 0, vectorSize = vector.size(); i < vectorSize; i++) {
-                var vectorTmp = vector.get(i);
+                Vector vectorTmp = (Vector) vector.get(i);
                 String nameTmp = vectorTmp.get(0).toString();
 
                 if (oldName.equals(nameTmp)) row = i;
