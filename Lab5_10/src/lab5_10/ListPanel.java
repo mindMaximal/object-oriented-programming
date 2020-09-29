@@ -24,6 +24,7 @@ public class ListPanel extends JPanel {
     private JRadioButton carsRadioButton;
     private JRadioButton expressRadioButton;
     private static int activeTable;
+    private static JLabel title;
 
     //Констркутор
     public ListPanel() {
@@ -64,11 +65,11 @@ public class ListPanel extends JPanel {
         //Переменная, позволяющая манипулировать настройками layout
         GridBagConstraints c = new GridBagConstraints();
 
-        label = new JLabel("Список транспортных средств:");
+        title = new JLabel("Список транспортных средств:");
 
         font = new Font(null, Font.BOLD, 14);
 
-        label.setFont(font);
+        title.setFont(font);
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
@@ -77,7 +78,7 @@ public class ListPanel extends JPanel {
         c.gridy = 0;
         c.weighty = 0.05;
 
-        pane.add(label, c);
+        pane.add(title, c);
 
         tablePanel.setLayout(new CardLayout(0, 0));
         tablePanel.add(addTableToPanel("CARS", carsTable), "CarsTable");
@@ -102,11 +103,21 @@ public class ListPanel extends JPanel {
         button.addActionListener(e -> {
             AddPanel.clearFields();
 
+
+            if (carsRadioButton.isSelected()) {
+                AddPanel.setSelected(0);
+            }
+            else if (expressRadioButton.isSelected()) {
+                AddPanel.setSelected(1);
+            }
+
             CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
             cardLayout.show(AppGUI.getCardPane(), "Add");
         });
         setButtonSetting(button);
         setLayoutSetting(c);
+
+        c.gridy = 5;
 
         panel.add(button, c);
 
@@ -121,18 +132,20 @@ public class ListPanel extends JPanel {
         });
         setLayoutSetting(c);
 
+        c.gridy = 6;
+
         panel.add(button, c);
 
         //Поиск
 
-        label = new JLabel("Поиск:");
+        label = new JLabel("Фильтр поиска:");
         c.insets = new Insets(10,20,0,20);
         c.gridx = 0;
         c.gridy = 3;
 
         panel.add(label, c);
 
-        c.insets = new Insets(0,20,0,20);
+        c.insets = new Insets(0,20,20,20);
         c.gridx = 0;
         c.gridy = 4;
         addSortToPane();
@@ -161,10 +174,10 @@ public class ListPanel extends JPanel {
         });
         buttonGroup.add(carsRadioButton);
 
-        label = new JLabel("Выберете таблицу:");
-        c.insets = new Insets(10,20,0,20);
+        label = new JLabel("Выбрать:");
+        c.insets = new Insets(0,20,0,20);
         c.gridx = 0;
-        c.gridy = 5;
+        c.gridy = 0;
 
         panel.add(label, c);
 
@@ -172,7 +185,7 @@ public class ListPanel extends JPanel {
         c.anchor = GridBagConstraints.NORTH;
         c.insets = new Insets(0,20,0,20);
         c.gridx = 0;
-        c.gridy = 6;
+        c.gridy = 1;
 
         panel.add(carsRadioButton, c);
 
@@ -196,7 +209,7 @@ public class ListPanel extends JPanel {
         c.anchor = GridBagConstraints.NORTH;
         c.insets = new Insets(0,20,0,20);
         c.gridx = 0;
-        c.gridy = 7;
+        c.gridy = 2;
 
         panel.add(expressRadioButton, c);
 
@@ -418,10 +431,10 @@ public class ListPanel extends JPanel {
         Integer row = AddPanel.getRow();
 
         if (row == null) {
-            var vector = model.getDataVector();
+            Vector<Vector> vector = model.getDataVector();
 
             for (int i = 0, vectorSize = vector.size(); i < vectorSize; i++) {
-                var vectorTmp = vector.get(i);
+                Vector vectorTmp = vector.get(i);
                 String nameTmp = vectorTmp.get(0).toString();
 
                 if (oldName.equals(nameTmp)) row = i;

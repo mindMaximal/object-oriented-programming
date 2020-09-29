@@ -1,16 +1,13 @@
 package lab5_10;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.font.TextAttribute;
-import java.math.BigDecimal;
 
 public class AddPanel extends JPanel {
     //Создаем переменные для элементов
@@ -18,11 +15,13 @@ public class AddPanel extends JPanel {
     private static JTextField[] textFields;
     private static JPanel[] labelPanels;
     private static JLabel[] supportLabels;
+    private static JLabel title;
     private static JRadioButton[] radioButtons;
     private static boolean isEditing = false;
     private static Vehicle vehicle;
     private static Integer rowEditing = null;
     private static Integer columnEditing = null;
+    private static boolean isSaved = false;
 
     //Конструктор
     public AddPanel() {
@@ -57,6 +56,23 @@ public class AddPanel extends JPanel {
         System.out.println("Поля очищены");
     }
 
+    public static boolean isSaved() {
+        return isSaved;
+    }
+
+    public static void toggleMode() {
+        if (isEditing) {
+            title.setText("Редактирование:");
+        } else {
+            title.setText("Добавить транспортное средство:");
+        }
+    }
+
+    public static void setEditMode() {
+        isEditing = true;
+        toggleMode();
+    }
+
     //Метод добавляющий элементы на панель
     private void addElementToPanel(Container pane) {
         JButton button;
@@ -68,9 +84,9 @@ public class AddPanel extends JPanel {
         //Переменная, позволяющая манипулировать настройками layout
         GridBagConstraints c = new GridBagConstraints();
 
-        label = new JLabel("Добавить транспортное средство:");
+        title = new JLabel("Добавить транспортное средство:");
         font = new Font("", Font.BOLD, 14);
-        label.setFont(font);
+        title.setFont(font);
         c.gridx = 0;
         c.gridy = 0;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -78,7 +94,7 @@ public class AddPanel extends JPanel {
         c.weighty = 0.05;
         c.insets = new Insets(10,20,0,20);
 
-        pane.add(label, c);
+        pane.add(title, c);
 
         panel = new JPanel();
         panel.setBackground(Color.decode("#ffffff"));
@@ -91,9 +107,7 @@ public class AddPanel extends JPanel {
         radioButtons[0].setBackground(Color.decode("#ffffff"));
         radioButtons[0].setHorizontalAlignment(SwingConstants.LEFT);
         radioButtons[0].addActionListener(e -> {
-            labelArray[4].setText("Количество колес:");
-            labelArray[5].setVisible(false);
-            textFields[5].setVisible(false);
+            setActiveFileds(0);
         });
         buttonGroup.add(radioButtons[0]);
 
@@ -107,9 +121,7 @@ public class AddPanel extends JPanel {
         radioButtons[1].setBackground(Color.decode("#ffffff"));
         radioButtons[1].setHorizontalAlignment(SwingConstants.LEFT);
         radioButtons[1].addActionListener(e -> {
-            labelArray[4].setText("Количество баз:  ");
-            labelArray[5].setVisible(true);
-            textFields[5].setVisible(true);
+            setActiveFileds(1);
         });
         buttonGroup.add(radioButtons[1]);
 
@@ -119,7 +131,7 @@ public class AddPanel extends JPanel {
 
         panel.add(radioButtons[1], c);
 
-        label = new JLabel("Добавить:");
+        label = new JLabel("Тип:");
         label.setHorizontalAlignment(JLabel.LEFT);
 
         c.gridx = 0;
@@ -293,6 +305,13 @@ public class AddPanel extends JPanel {
         button.setBackground(Color.decode("#7ebc59"));
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.addActionListener(e -> {
+            if (!isEditing) {
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Вы хотите сохранить введенные данные?", "Переход в меню", dialogButton);
+
+                isSaved = dialogResult == JOptionPane.YES_OPTION;
+            }
+
             CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
             cardLayout.show(AppGUI.getCardPane(), "Menu");
         });
@@ -312,6 +331,21 @@ public class AddPanel extends JPanel {
 
         pane.add(panel, c);
     }
+
+    private static void setActiveFileds(int index) {
+
+        if (index > radioButtons.length) return;
+        if (index == 0) {
+            labelArray[4].setText("Количество колес:");
+            labelArray[5].setVisible(false);
+            textFields[5].setVisible(false);
+        } else if (index == 1) {
+            labelArray[4].setText("Количество баз:  ");
+            labelArray[5].setVisible(true);
+            textFields[5].setVisible(true);
+        }
+    }
+
     //Метод задающий стандартные настройки для панели
     private void initPanel() {
 
@@ -356,47 +390,69 @@ public class AddPanel extends JPanel {
 
         PlainDocument doc;
 
-        String numPattern = "^$|[\\d\\s^$]+";
-        String strPattern = "^$|[a-zA-Z а-яёА-ЯЁ^$]+";
-
-        String msg = "вводите только цифры";
+        String type = "NUM";
 
         doc = (PlainDocument) textFields[1].getDocument();
-        doc.setDocumentFilter(new DigitFilter(numPattern, supportLabels[1], msg));
+        doc.setDocumentFilter(new DigitFilter(type, supportLabels[1], 3));
 
         doc = (PlainDocument) textFields[2].getDocument();
-        doc.setDocumentFilter(new DigitFilter(numPattern, supportLabels[2], msg));
+        doc.setDocumentFilter(new DigitFilter(type, supportLabels[2], 5));
 
         doc = (PlainDocument) textFields[4].getDocument();
-        doc.setDocumentFilter(new DigitFilter(numPattern, supportLabels[4], msg));
+        doc.setDocumentFilter(new DigitFilter(type, supportLabels[4], 2));
 
-        msg = "вводите только слова";
+        type = "WORDS";
 
         doc = (PlainDocument) textFields[3].getDocument();
-        doc.setDocumentFilter(new DigitFilter(strPattern, supportLabels[3], msg));
+        doc.setDocumentFilter(new DigitFilter(type, supportLabels[3], 20));
     }
 
     private boolean isEmpty(String str) {
         return str == null || str.isEmpty() || str.trim().length() == 0;
     }
 
+    public static void setSelected(int index) {
+
+        if (index > radioButtons.length) return;
+
+        radioButtons[index].setSelected(true);
+        setActiveFileds(index);
+    }
+
     class DigitFilter extends DocumentFilter {
-        private final String DIGITS;
+        private String DIGITS;
         private final JLabel label;
         private String msg = "";
+        private final String type;
+        private int limit = 10;
+        private String limitMsg;
 
-        public DigitFilter(String DIGITS, JLabel label, String msg) {
-            this.DIGITS = DIGITS;
+        public DigitFilter(String type, JLabel label, int limitations) {
+            this.type = type;
             this.label = label;
-            this.msg = msg;
+            this.limit = limitations;
+
+            if(this.type.equals("NUM")) {
+                DIGITS = "^$|[\\d\\s^$]+";
+                msg = "вводите только цифры";
+                limitMsg = "вводите слишком большое число";
+            } else if (this.type.equals("WORDS")) {
+                DIGITS = "^$|[a-zA-Z а-яёА-ЯЁ^$]+";
+                msg = "вводите только слова";
+                limitMsg = "вводите слишком длинное слово";
+            }
         }
 
         @Override
-        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attrs) throws BadLocationException {
             if (string.matches(DIGITS)) {
-                super.insertString(fb, offset, string, attr);
-                label.setText("");
+
+                 if (isValid(offset, limit)) {
+                     super.insertString(fb, offset, string, attrs);
+                     label.setText("");
+                 } else {
+                     label.setText(limitMsg);
+                 }
             } else {
                 label.setText(msg);
             }
@@ -405,11 +461,20 @@ public class AddPanel extends JPanel {
         @Override
         public void replace(FilterBypass fb, int offset, int length, String string, AttributeSet attrs) throws BadLocationException {
             if (string.matches(DIGITS)) {
-                super.replace(fb, offset, length, string, attrs);
-                label.setText("");
+
+                if (isValid(offset, limit)) {
+                    super.replace(fb, offset, length, string, attrs);
+                    label.setText("");
+                } else {
+                    label.setText(limitMsg);
+                }
             } else {
                 label.setText(msg);
             }
+        }
+
+        private boolean isValid(int length, int limitations) {
+            return length < limitations;
         }
 
 

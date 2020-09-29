@@ -29,7 +29,7 @@ public class MainPanel extends JPanel {
         GridBagConstraints constraints = new GridBagConstraints();
 
         //Создадим новую кнопку
-        button = new JButton("Посмотреть список транспортных средств");
+        button = new JButton("Список транспортных средств");
         //Зададим стандартные настройки слоя для этой панели
         setLayoutSetting(constraints);
         //Зададим стандартные настройки кнопки для этой панели
@@ -55,7 +55,11 @@ public class MainPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddPanel.clearFields();
+                if (!AddPanel.isSaved()) {
+                    AddPanel.clearFields();
+                }
+
+                AddPanel.toggleMode();
 
                 CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
                 cardLayout.show(AppGUI.getCardPane(), "Add");
@@ -64,6 +68,7 @@ public class MainPanel extends JPanel {
         //Добавим кнопку в контейнер
         pane.add(button, constraints);
 
+        /*
         //Создадим новую кнопку
         button = new JButton("Удалить транспортное средство");
         //Зададим стандартные настройки слоя для этой панели
@@ -81,7 +86,9 @@ public class MainPanel extends JPanel {
         });
         //Добавим кнопку в контейнер
         pane.add(button, constraints);
+        */
 
+        /*
         //Создадим новую кнопку
         button = new JButton("Найти транспортное средство");
         //Зададим стандартные настройки слоя для этой панели
@@ -100,6 +107,7 @@ public class MainPanel extends JPanel {
         });
         //Добавим кнопку в контейнер
         pane.add(button, constraints);
+         */
     }
 
     //Функция настройки параметров кнопок с стандартным фоном
