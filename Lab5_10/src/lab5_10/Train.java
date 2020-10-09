@@ -2,7 +2,7 @@ package lab5_10;
 
 public abstract class Train extends Vehicle {
     //Поле, отвечающее за количество рельс
-    protected int railCount = 0;
+    protected int railCount;
 
     public Train(String name, int speed, int weight, String color, int railCount) {
         //Передаем параметры в конструктор родителя

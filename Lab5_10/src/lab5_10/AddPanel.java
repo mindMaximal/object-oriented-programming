@@ -23,7 +23,6 @@ public class AddPanel extends JPanel {
     private static boolean isEditing = false;
     private static Vehicle vehicle;
     private static Integer rowEditing = null;
-    private static Integer columnEditing = null;
     private static boolean isSaved = false;
 
     //Конструктор
@@ -33,17 +32,12 @@ public class AddPanel extends JPanel {
         setValidation();
     }
 
-    public static void setCellPos(Integer row, Integer column) {
+    public static void setCellPos(Integer row) {
         rowEditing = row;
-        columnEditing = column;
     }
 
     public static Integer getRow() {
         return rowEditing;
-    }
-
-    public static int getColumn() {
-        return columnEditing;
     }
 
     public static void clearFields() {
@@ -109,9 +103,7 @@ public class AddPanel extends JPanel {
         radioButtons[0] = new JRadioButton("Автомобили", true);
         radioButtons[0].setBackground(Color.decode("#ffffff"));
         radioButtons[0].setHorizontalAlignment(SwingConstants.LEFT);
-        radioButtons[0].addActionListener(e -> {
-            setActiveFileds(0);
-        });
+        radioButtons[0].addActionListener(e -> setActiveFields(0));
         buttonGroup.add(radioButtons[0]);
 
         c.weightx = 0.25;
@@ -123,9 +115,7 @@ public class AddPanel extends JPanel {
         radioButtons[1] = new JRadioButton("Экспрессы", true);
         radioButtons[1].setBackground(Color.decode("#ffffff"));
         radioButtons[1].setHorizontalAlignment(SwingConstants.LEFT);
-        radioButtons[1].addActionListener(e -> {
-            setActiveFileds(1);
-        });
+        radioButtons[1].addActionListener(e -> setActiveFields(1));
         buttonGroup.add(radioButtons[1]);
 
         c.weightx = 0.25;
@@ -200,7 +190,6 @@ public class AddPanel extends JPanel {
                         super.keyReleased(e);
 
                         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                            System.out.println("i=" + finalI + ", len=" + textFields.length);
 
                             if (radioButtons[0].isSelected()) {
 
@@ -414,7 +403,7 @@ public class AddPanel extends JPanel {
         pane.add(panel, c);
     }
 
-    private static void setActiveFileds(int index) {
+    private static void setActiveFields(int index) {
 
         if (index > radioButtons.length) return;
         if (index == 0) {
@@ -496,15 +485,15 @@ public class AddPanel extends JPanel {
         if (index > radioButtons.length) return;
 
         radioButtons[index].setSelected(true);
-        setActiveFileds(index);
+        setActiveFields(index);
     }
 
-    class DigitFilter extends DocumentFilter {
+    static class DigitFilter extends DocumentFilter {
         private String DIGITS;
         private final JLabel label;
         private String msg = "";
         private final String type;
-        private int limit = 10;
+        private final int limit;
         private String limitMsg;
 
         public DigitFilter(String type, JLabel label, int limitations) {

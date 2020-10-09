@@ -2,7 +2,7 @@ package lab5_10;
 
 public class Car extends Vehicle {
     //Поле, отвечающее за количество колес
-    private int wheelsCount = 0;
+    private int wheelsCount;
     
     //Стандартный конструктор
     public Car(String name, int speed, int weight, String color, int wheelsCount) {

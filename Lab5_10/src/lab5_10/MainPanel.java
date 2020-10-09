@@ -2,8 +2,6 @@ package lab5_10;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainPanel extends JPanel {
     //Количество кнопок на панели
@@ -35,12 +33,9 @@ public class MainPanel extends JPanel {
         //Зададим стандартные настройки кнопки для этой панели
         setButtonSetting(button);
         //Добавим обработчик для кнопки
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
-                cardLayout.show(AppGUI.getCardPane(), "List");
-            }
+        button.addActionListener(e -> {
+            CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+            cardLayout.show(AppGUI.getCardPane(), "List");
         });
         //Добавим кнопку в контейнер
         pane.add(button, constraints);
@@ -52,62 +47,18 @@ public class MainPanel extends JPanel {
         //Зададим стандартные настройки кнопки для этой панели
         setButtonSetting(button);
         //Добавим обработчик для кнопки
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!AddPanel.isSaved()) {
-                    AddPanel.clearFields();
-                }
-
-                AddPanel.toggleMode();
-
-                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
-                cardLayout.show(AppGUI.getCardPane(), "Add");
+        button.addActionListener(e -> {
+            if (!AddPanel.isSaved()) {
+                AddPanel.clearFields();
             }
+
+            AddPanel.toggleMode();
+
+            CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+            cardLayout.show(AppGUI.getCardPane(), "Add");
         });
         //Добавим кнопку в контейнер
         pane.add(button, constraints);
-
-        /*
-        //Создадим новую кнопку
-        button = new JButton("Удалить транспортное средство");
-        //Зададим стандартные настройки слоя для этой панели
-        setLayoutSetting(constraints);
-        //Зададим стандартные настройки кнопки для этой панели
-        setButtonSetting(button);
-        //Добавим обработчик для кнопки
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
-                cardLayout.show(AppGUI.getCardPane(), "List");
-                JOptionPane.showMessageDialog(null, "Для того чтобы удалить транспортное средство\r\nнайдите его в списке, нажмите правкую кнопку и выберете \"Удалить\"", "Удаление транспортного средства", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-        //Добавим кнопку в контейнер
-        pane.add(button, constraints);
-        */
-
-        /*
-        //Создадим новую кнопку
-        button = new JButton("Найти транспортное средство");
-        //Зададим стандартные настройки слоя для этой панели
-        setLayoutSetting(constraints);
-        //Зададим стандартные настройки кнопки для этой панели
-        setButtonSetting(button);
-        //Добавим обработчик для кнопки
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AppGUI.initCom();
-                FindDialog findDialog = new FindDialog();
-
-                findDialog.showDialog();
-            }
-        });
-        //Добавим кнопку в контейнер
-        pane.add(button, constraints);
-         */
     }
 
     //Функция настройки параметров кнопок с стандартным фоном

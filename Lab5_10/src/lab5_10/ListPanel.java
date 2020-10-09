@@ -7,8 +7,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -124,15 +122,12 @@ public class ListPanel extends JPanel {
 
         button = new JButton("Меню");
         setButtonSetting(button);
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                carsTableFilterTextField.setText("");
-                expressTableFilterTextField.setText("");
+        button.addActionListener(e -> {
+            carsTableFilterTextField.setText("");
+            expressTableFilterTextField.setText("");
 
-                CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
-                cardLayout.show(AppGUI.getCardPane(), "Menu");
-            }
+            CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
+            cardLayout.show(AppGUI.getCardPane(), "Menu");
         });
         setLayoutSetting(c);
 
@@ -165,12 +160,7 @@ public class ListPanel extends JPanel {
         carsRadioButton = new JRadioButton("Автомобили", true);
         carsRadioButton.setBackground(Color.decode("#ffffff"));
         carsRadioButton.setHorizontalAlignment(SwingConstants.LEFT);
-        carsRadioButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setCarsVisible();
-            }
-        });
+        carsRadioButton.addActionListener(e -> setCarsVisible());
         buttonGroup.add(carsRadioButton);
 
         label = new JLabel("Выбрать:");
@@ -191,12 +181,7 @@ public class ListPanel extends JPanel {
         expressRadioButton = new JRadioButton("Экспрессы", false);
         expressRadioButton.setBackground(Color.decode("#ffffff"));
         expressRadioButton.setHorizontalAlignment(SwingConstants.LEFT);
-        expressRadioButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setExpressVisible();
-            }
-        });
+        expressRadioButton.addActionListener(e -> setExpressVisible());
         buttonGroup.add(expressRadioButton);
 
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -256,9 +241,7 @@ public class ListPanel extends JPanel {
 
         GridBagConstraints c = new GridBagConstraints();
 
-        Vector<Vector<String>> data = new Vector<Vector<String>>() ;
         // Вектор с заголовками столбцов
-        Vector<String> header = new Vector<String>();
 
         ArrayList<Vehicle> vehiclesList = type == 1 ? AppGUI.getCarsList() : AppGUI.getExpressList();
 
@@ -278,7 +261,7 @@ public class ListPanel extends JPanel {
 
         for (Vehicle vehicle : vehiclesList) {
 
-            Vector<String> row = new Vector<String>();
+            Vector<String> row = new Vector<>();
 
             Object[] objects = vehicle.getObject();
 
@@ -425,10 +408,10 @@ public class ListPanel extends JPanel {
         Integer row = AddPanel.getRow();
 
         if (row == null) {
-            Vector<Vector> vector = model.getDataVector();
+            Vector vector = model.getDataVector();
 
             for (int i = 0, vectorSize = vector.size(); i < vectorSize; i++) {
-                Vector vectorTmp = vector.get(i);
+                Vector vectorTmp = (Vector) vector.get(i);
                 String nameTmp = vectorTmp.get(0).toString();
 
                 if (oldName.equals(nameTmp)) row = i;
@@ -436,7 +419,9 @@ public class ListPanel extends JPanel {
         }
 
         try {
-            model.setValueAt(name, row, 0);
+            model.setValueAt(name,
+                    row,
+                    0);
             model.setValueAt(speed, row, 1);
             model.setValueAt(weight, row, 2);
             model.setValueAt(color, row, 3);

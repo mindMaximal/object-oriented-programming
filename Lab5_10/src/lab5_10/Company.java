@@ -79,7 +79,6 @@ public class Company {
                     speed = rnd.nextInt(350);
                     weight = rnd.nextInt(1000) + 2000;
                     color = "синий";
-                    wheelsCount = rnd.nextInt(4) + 2;
                     expressType = rnd.nextInt(2) == 0 ? "Междугородний" : "Региональный";
                     railCount = 2;
 
@@ -88,6 +87,8 @@ public class Company {
                     //Добавляем объект в список
                     expressList.add(expressTmp);
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + rnd.nextInt(2));
             }
         }
     }
