@@ -16,13 +16,13 @@ public class ListPanel extends JPanel {
 
     //Необходимые поля
     private int buttonCount = 0;
-    private final JPanel tablePanel = new JPanel();
+    private static final JPanel tablePanel = new JPanel();
     private static final JTable carsTable = new JTable();
     private static final JTable expressTable = new JTable();
-    private final JTextField carsTableFilterTextField = new JTextField();
-    private final JTextField expressTableFilterTextField = new JTextField();
-    private JRadioButton carsRadioButton;
-    private JRadioButton expressRadioButton;
+    private static final JTextField carsTableFilterTextField = new JTextField();
+    private static final JTextField expressTableFilterTextField = new JTextField();
+    private static JRadioButton carsRadioButton;
+    private static JRadioButton expressRadioButton;
     private static int activeTable;
     private static JLabel title;
 
@@ -107,6 +107,7 @@ public class ListPanel extends JPanel {
             if (carsRadioButton.isSelected()) {
                 AddPanel.setSelected(0);
             }
+
             else if (expressRadioButton.isSelected()) {
                 AddPanel.setSelected(1);
             }
@@ -126,6 +127,9 @@ public class ListPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                carsTableFilterTextField.setText("");
+                expressTableFilterTextField.setText("");
+
                 CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
                 cardLayout.show(AppGUI.getCardPane(), "Menu");
             }
@@ -164,12 +168,7 @@ public class ListPanel extends JPanel {
         carsRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) tablePanel.getLayout();
-                cardLayout.show(tablePanel, "CarsTable");
-                carsTableFilterTextField.setVisible(true);
-                expressTableFilterTextField.setVisible(false);
-                carsTable.addMouseListener(new PopClickListener());
-                activeTable = 0;
+                setCarsVisible();
             }
         });
         buttonGroup.add(carsRadioButton);
@@ -195,12 +194,7 @@ public class ListPanel extends JPanel {
         expressRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CardLayout cardLayout = (CardLayout) tablePanel.getLayout();
-                cardLayout.show(tablePanel, "ExpressTable");
-                carsTableFilterTextField.setVisible(false);
-                expressTableFilterTextField.setVisible(true);
-                expressTable.addMouseListener(new PopClickListener());
-                activeTable = 1;
+                setExpressVisible();
             }
         });
         buttonGroup.add(expressRadioButton);
@@ -441,8 +435,6 @@ public class ListPanel extends JPanel {
             }
         }
 
-        JOptionPane.showMessageDialog(null, "Поправь");
-
         try {
             model.setValueAt(name, row, 0);
             model.setValueAt(speed, row, 1);
@@ -454,5 +446,26 @@ public class ListPanel extends JPanel {
             System.out.println(error);
         }
 
+    }
+
+    public static void setCarsVisible() {
+        carsRadioButton.setSelected(true);
+        CardLayout cardLayout = (CardLayout) tablePanel.getLayout();
+        cardLayout.show(tablePanel, "CarsTable");
+        carsTableFilterTextField.setVisible(true);
+        expressTableFilterTextField.setVisible(false);
+        carsTable.addMouseListener(new PopClickListener());
+        activeTable = 0;
+    }
+
+    public static void setExpressVisible() {
+        expressRadioButton.setSelected(true);
+        System.out.println("test");
+        CardLayout cardLayout = (CardLayout) tablePanel.getLayout();
+        cardLayout.show(tablePanel, "ExpressTable");
+        carsTableFilterTextField.setVisible(false);
+        expressTableFilterTextField.setVisible(true);
+        expressTable.addMouseListener(new PopClickListener());
+        activeTable = 1;
     }
 }

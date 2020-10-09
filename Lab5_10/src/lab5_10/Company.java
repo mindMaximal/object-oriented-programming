@@ -7,22 +7,21 @@ public class Company {
     //Список для хранения объектов
     protected ArrayList<Vehicle> carList = new ArrayList<>();
     protected ArrayList<Vehicle> expressList = new ArrayList<>();
+    protected String[] expressTypes;
     //Поле для получения случайного числа
-    final Random rnd = new Random();
+    private final Random rnd = new Random();
 
-    //Поля для объектов
-    protected String name;
-    protected int speed;
-    protected int weight;
-    protected String color;
-    protected int wheelsCount;
-    protected String expressType;
-    protected int railCount;
-    
     //Стандартный конструктор
     public Company() {
         //Заполним список 10 случайными объектами
         randomVehicles(5);
+
+        expressTypes = new String[] {
+                "Междугородний",
+                "Региональный",
+                "Скоростной",
+                "Местной линии"
+        };
     }
     
     //Метод, добавляющий новое транспортное средство в список - машина
@@ -42,7 +41,15 @@ public class Company {
         System.out.println("Транспортное средство добавлено");
     }
 
-    public void randomVehicles(int count) {
+    private void randomVehicles(int count) {
+        //Поля для объектов
+        String name;
+        int speed;
+        int weight;
+        String color;
+        int wheelsCount;
+        String expressType;
+        int railCount;
 
         //Счетчики
         int carsCount = 0;
@@ -225,4 +232,7 @@ public class Company {
         }
     }
 
+    public String[] getExpressTypes() {
+        return expressTypes;
+    }
 }

@@ -4,10 +4,11 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.text.MessageFormat;
 import java.util.Vector;
 
-public class PopUp  extends JPopupMenu {
-    JMenuItem menuItem;
+public class PopUp extends JPopupMenu {
+    private JMenuItem menuItem;
 
     public PopUp(MouseEvent e, JTable table, int activeTable){
 
@@ -46,8 +47,11 @@ public class PopUp  extends JPopupMenu {
             table.setRowSelectionInterval(row, row);
 
             menuItem.addActionListener(event -> {
+
+                String nameForDelete = table.getValueAt(row, 0).toString();
+
                 int dialogButton = JOptionPane.YES_NO_OPTION;
-                int dialogResult = JOptionPane.showConfirmDialog(null, "Вы хотите удалить эту строку?", "Warning", dialogButton);
+                int dialogResult = JOptionPane.showConfirmDialog(null, MessageFormat.format("Вы хотите удалить \"{0}?\"", nameForDelete), "Warning", dialogButton);
 
                 if(dialogResult == JOptionPane.YES_OPTION){
                     DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -67,6 +71,4 @@ public class PopUp  extends JPopupMenu {
 
         add(menuItem);
     }
-
-
 }

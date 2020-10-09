@@ -19,8 +19,6 @@ public class Car extends Vehicle {
         };
     }
 
-
-
     @Override
     public void updateVehicle(Object[] object) {
         this.name = object[0].toString();

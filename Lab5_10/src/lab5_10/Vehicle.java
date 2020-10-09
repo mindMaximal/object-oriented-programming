@@ -7,7 +7,15 @@ public abstract class Vehicle {
     protected int speed;
     protected int weight;
     protected String color;
-    
+
+    //Стандартный конструктор
+    public Vehicle(String name, int speed, int weight, String color) {
+        this.name = name;
+        this.speed = speed;
+        this.weight = weight;
+        this.color = color;
+    }
+
     //Метод возвращающий название
     public String getName() {
         return name;
@@ -25,14 +33,6 @@ public abstract class Vehicle {
         return new String[] {
                 name, Integer.toString(speed), Integer.toString(weight), color
         };
-    }
-    
-    //Стандартный конструктор 
-    public Vehicle(String name, int speed, int weight, String color) {
-        this.name = name;
-        this.speed = speed;
-        this.weight = weight;
-        this.color = color;
     }
 
     //Абстрактный метод, возвращающий нагрузку на колесную или рельсовую базу

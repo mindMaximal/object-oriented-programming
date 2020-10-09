@@ -19,8 +19,6 @@ public class Express extends Train {
         };
     }
 
-
-
     //Метод для получения типа экспресса
     public String getType() {
         return expressType;

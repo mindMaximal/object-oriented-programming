@@ -1,13 +1,14 @@
 package lab5_10;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class AddPanel extends JPanel {
     //Создаем переменные для элементов
@@ -17,6 +18,8 @@ public class AddPanel extends JPanel {
     private static JLabel[] supportLabels;
     private static JLabel title;
     private static JRadioButton[] radioButtons;
+    private static JButton addButton;
+    private static JComboBox<String> expressTypesComboBox;
     private static boolean isEditing = false;
     private static Vehicle vehicle;
     private static Integer rowEditing = null;
@@ -143,7 +146,7 @@ public class AddPanel extends JPanel {
         panel.add(label, c);
 
         String[] labelNames = new String[] {
-                "Название:", "Скорость:", "Вес:", "Цвет:", "Количество колес:", "Тип экспресса:"
+                "Название:", "Скорость, км/ч:", "Вес, кг:", "Цвет:", "Количество колес, шт:", "Тип экспресса:"
         };
         labelArray = new JLabel[labelNames.length];
         textFields = new JTextField[labelNames.length];
@@ -184,17 +187,74 @@ public class AddPanel extends JPanel {
             panel.add(labelPanels[i], c);
 
             c.gridy = (i + 2) - ( (i + 2) % 2 ) + 1;
-            panel.add(textFields[i], c);
+            c.insets = new Insets(0,20,25,20);
+            if (i != labelNames.length - 1) {
+
+                int finalI = i;
+
+                textFields[i].setPreferredSize(new Dimension(150,25));
+                textFields[i].addKeyListener(new KeyAdapter() {
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+                        super.keyReleased(e);
+
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                            System.out.println("i=" + finalI + ", len=" + textFields.length);
+
+                            if (radioButtons[0].isSelected()) {
+
+                                if (finalI + 1 == textFields.length - 1) {
+                                    addButton.doClick();
+                                } else {
+                                    textFields[finalI + 1].requestFocus();
+                                }
+
+                            } else if (radioButtons[1].isSelected()) {
+
+                                if (finalI + 1 == textFields.length) {
+                                    addButton.doClick();
+                                } else if (finalI + 1 == textFields.length - 1) {
+                                    expressTypesComboBox.requestFocus();
+                                } else {
+                                    textFields[finalI + 1].requestFocus();
+                                }
+
+                            }
+
+                        }
+
+                    }
+                });
+
+                panel.add(textFields[i], c);
+            } else {
+                String[] items = AppGUI.getExpressTypes();
+
+                expressTypesComboBox = new JComboBox<>(items);
+                expressTypesComboBox.setVisible(false);
+                expressTypesComboBox.addKeyListener(new KeyAdapter() {
+
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+                        super.keyReleased(e);
+
+                        if (e.getKeyCode() == KeyEvent.VK_ENTER) addButton.doClick();
+                    }
+                });
+
+                panel.add(expressTypesComboBox, c);
+            }
 
         }
 
-        button = new JButton("Отправить");
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        button.setForeground(Color.WHITE);
-        button.setBackground(Color.decode("#7ebc59"));
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.addActionListener((ActionEvent e) -> {
+        addButton = new JButton("Отправить");
+        addButton.setBorderPainted(false);
+        addButton.setFocusPainted(false);
+        addButton.setForeground(Color.WHITE);
+        addButton.setBackground(Color.decode("#7ebc59"));
+        addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        addButton.addActionListener((ActionEvent e) -> {
 
             String msg = "Пожалуйста, заполните все поля";
 
@@ -217,6 +277,8 @@ public class AddPanel extends JPanel {
 
                             CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
                             cardLayout.show(AppGUI.getCardPane(), "List");
+
+                            ListPanel.setCarsVisible();
                         }
 
                     } else if(radioButtons[1].isSelected()) {
@@ -226,15 +288,17 @@ public class AddPanel extends JPanel {
                         int weight = Integer.parseInt(textFields[2].getText());
                         String color = textFields[3].getText();
                         int railsCount = Integer.parseInt(textFields[4].getText());
-                        String expressType = textFields[5].getText();
+                        String expressType = (String) expressTypesComboBox.getSelectedItem();
 
-                        if (isEmpty(oldName) || isEmpty(name) || isEmpty(color) || isEmpty(expressType)) {
+                        if (isEmpty(oldName) || isEmpty(name) || isEmpty(color)) {
                             JOptionPane.showMessageDialog(null, msg,"Ошибка", JOptionPane.ERROR_MESSAGE);
                         } else {
                             AppGUI.updateVehicle(oldName, name, speed, weight, color, railsCount, expressType);
 
                             CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
                             cardLayout.show(AppGUI.getCardPane(), "List");
+
+                            ListPanel.setExpressVisible();
                         }
                     }
 
@@ -263,6 +327,8 @@ public class AddPanel extends JPanel {
 
                             CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
                             cardLayout.show(AppGUI.getCardPane(), "List");
+
+                            ListPanel.setCarsVisible();
                         }
 
                     } else if(radioButtons[1].isSelected()) {
@@ -271,15 +337,17 @@ public class AddPanel extends JPanel {
                         int weight = Integer.parseInt(textFields[2].getText());
                         String color = textFields[3].getText();
                         int railsCount = Integer.parseInt(textFields[4].getText());
-                        String expressType = textFields[5].getText();
+                        String expressType = (String) expressTypesComboBox.getSelectedItem();
 
-                        if (isEmpty(name) || isEmpty(color) || isEmpty(expressType)) {
+                        if (isEmpty(name) || isEmpty(color)) {
                             JOptionPane.showMessageDialog(null, msg,"Ошибка", JOptionPane.ERROR_MESSAGE);
                         } else {
                             AppGUI.addVehicle(name, speed, weight, color, railsCount, expressType);
 
                             CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
                             cardLayout.show(AppGUI.getCardPane(), "List");
+
+                            ListPanel.setExpressVisible();
                         }
                     }
 
@@ -296,7 +364,7 @@ public class AddPanel extends JPanel {
         c.gridy = 8;
         c.gridx = 0;
 
-        panel.add(button, c);
+        panel.add(addButton, c);
 
         button = new JButton("Меню");
         button.setBorderPainted(false);
@@ -305,11 +373,25 @@ public class AddPanel extends JPanel {
         button.setBackground(Color.decode("#7ebc59"));
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.addActionListener(e -> {
-            if (!isEditing) {
+
+            boolean hasData = false;
+
+            for (JTextField field : textFields) {
+                if (field.getText().trim().length() != 0) hasData = true;
+            }
+
+            if (!isEditing && hasData) {
                 int dialogButton = JOptionPane.YES_NO_OPTION;
                 int dialogResult = JOptionPane.showConfirmDialog(null, "Вы хотите сохранить введенные данные?", "Переход в меню", dialogButton);
 
                 isSaved = dialogResult == JOptionPane.YES_OPTION;
+            } else if (isEditing) {
+                int dialogButton = JOptionPane.YES_NO_OPTION;
+                int dialogResult = JOptionPane.showConfirmDialog(null, "Если вы выйдете в меню, данные не обновятся.\r\nВы хотите выйти в меню?", "Переход в меню", dialogButton);
+
+                if (dialogResult == JOptionPane.NO_OPTION) {
+                    return;
+                }
             }
 
             CardLayout cardLayout = (CardLayout) AppGUI.getCardPane().getLayout();
@@ -336,13 +418,13 @@ public class AddPanel extends JPanel {
 
         if (index > radioButtons.length) return;
         if (index == 0) {
-            labelArray[4].setText("Количество колес:");
+            labelArray[4].setText("Количество колес, шт:");
             labelArray[5].setVisible(false);
-            textFields[5].setVisible(false);
+            expressTypesComboBox.setVisible(false);
         } else if (index == 1) {
-            labelArray[4].setText("Количество баз:  ");
+            labelArray[4].setText("Количество баз, шт:");
             labelArray[5].setVisible(true);
-            textFields[5].setVisible(true);
+            expressTypesComboBox.setVisible(true);
         }
     }
 
@@ -366,17 +448,15 @@ public class AddPanel extends JPanel {
         if(vehicle instanceof Car) {
             radioButtons[0].setSelected(true);
 
-            labelArray[4].setText("Количество колес:");
+            labelArray[4].setText("Количество колес, шт:");
             labelArray[5].setVisible(false);
             textFields[5].setVisible(false);
-
         } else if (vehicle instanceof Express) {
             radioButtons[1].setSelected(true);
 
-            labelArray[4].setText("Количество баз:  ");
+            labelArray[4].setText("Количество баз, шт:");
             labelArray[5].setVisible(true);
             textFields[5].setVisible(true);
-
         }
 
         Object[] data = vehicle.getObject();
@@ -476,7 +556,6 @@ public class AddPanel extends JPanel {
         private boolean isValid(int length, int limitations) {
             return length < limitations;
         }
-
 
     }
 
