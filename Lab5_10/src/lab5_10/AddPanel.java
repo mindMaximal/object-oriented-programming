@@ -69,7 +69,6 @@ public class AddPanel extends JPanel {
         isEditing = true;
         toggleMode();
     }
-
     //Метод добавляющий элементы на панель
     private void addElementToPanel(Container pane) {
         JButton button;
@@ -416,7 +415,6 @@ public class AddPanel extends JPanel {
             expressTypesComboBox.setVisible(true);
         }
     }
-
     //Метод задающий стандартные настройки для панели
     private void initPanel() {
 

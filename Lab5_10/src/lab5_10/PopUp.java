@@ -10,7 +10,7 @@ import java.util.Vector;
 public class PopUp extends JPopupMenu {
     private JMenuItem menuItem;
 
-    public PopUp(MouseEvent e, JTable table, int activeTable){
+    public PopUp(MouseEvent e, JTable table, int activeTable) {
 
         menuItem = new JMenuItem("Редактировать");
 

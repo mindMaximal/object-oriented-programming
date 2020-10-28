@@ -10,11 +10,16 @@ public class Company {
     protected String[] expressTypes;
     //Поле для получения случайного числа
     private final Random rnd = new Random();
+    private Database db = new Database();
 
     //Стандартный конструктор
     public Company() {
         //Заполним список 10 случайными объектами
         randomVehicles(5);
+
+        db );
+
+        db.setConnection;
 
         expressTypes = new String[] {
                 "Междугородний",
@@ -92,7 +97,6 @@ public class Company {
             }
         }
     }
-
     //Метод, возвращающий список всех транспортных средств
     public ArrayList<Vehicle> getCarsList() {
         return carList;

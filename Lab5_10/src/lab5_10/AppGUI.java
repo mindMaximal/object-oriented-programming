@@ -4,6 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/*
+
+    https://sqlitebrowser.org/dl/
+
+ */
+
 public class AppGUI extends JFrame {
 
     //Объект класса-группы

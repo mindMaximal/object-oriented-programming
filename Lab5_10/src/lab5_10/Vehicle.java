@@ -34,10 +34,8 @@ public abstract class Vehicle {
                 name, Integer.toString(speed), Integer.toString(weight), color
         };
     }
-
     //Абстрактный метод, возвращающий нагрузку на колесную или рельсовую базу
     public abstract String getLoad();
-
     //Абстрактный метод, возвращающий цвет транспортного средства
     public abstract String getColor();
 
