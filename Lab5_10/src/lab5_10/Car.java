@@ -12,6 +12,13 @@ public class Car extends Vehicle {
         this.wheelsCount = wheelsCount;
     }
 
+    public Car(int id, String name, int speed, int weight, String color, int wheelsCount) {
+        //Передаем параметры в конструктор родителя
+        super(id, name, speed, weight, color);
+        //Заполняем поля этого класса
+        this.wheelsCount = wheelsCount;
+    }
+
     @Override
     public Object[] getObject() {
         return new String[] {

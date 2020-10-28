@@ -10,7 +10,12 @@ public abstract class Train extends Vehicle {
         //Заполняем поля этого класса
         this.railCount = railCount;
     }
-    
+
+    public Train(int id, String name, int speed, int weight, String color, int railCount) {
+        super(id, name, speed, weight, color);
+        this.railCount = railCount;
+    }
+
     //Перегружаем метод родителя для получения максимальной нагрузки на рельсовую базу
     @Override
     public  String getLoad() {

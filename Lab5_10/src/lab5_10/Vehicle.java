@@ -2,6 +2,7 @@ package lab5_10;
 
 public abstract class Vehicle {
     //Название транспортного средства
+    protected int id;
     protected String name;
     //Скорость  транспортного средства
     protected int speed;
@@ -10,6 +11,14 @@ public abstract class Vehicle {
 
     //Стандартный конструктор
     public Vehicle(String name, int speed, int weight, String color) {
+        this.name = name;
+        this.speed = speed;
+        this.weight = weight;
+        this.color = color;
+    }
+
+    public Vehicle(int id, String name, int speed, int weight, String color) {
+        this.id = id;
         this.name = name;
         this.speed = speed;
         this.weight = weight;
@@ -40,4 +49,8 @@ public abstract class Vehicle {
     public abstract String getColor();
 
     public abstract void updateVehicle(Object[] object);
+
+    public int getId() {
+        return id;
+    }
 }

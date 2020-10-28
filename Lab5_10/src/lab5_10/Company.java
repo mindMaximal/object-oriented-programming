@@ -1,5 +1,6 @@
 package lab5_10;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -10,16 +11,23 @@ public class Company {
     protected String[] expressTypes;
     //Поле для получения случайного числа
     private final Random rnd = new Random();
-    private Database db = new Database();
+    private Database db;
 
     //Стандартный конструктор
     public Company() {
-        //Заполним список 10 случайными объектами
-        randomVehicles(5);
+        db = new Database();
 
-        db );
+        try {
+            db.setConnection();
 
-        db.setConnection;
+            carList = db.read("cars");
+
+            expressList = db.read("express");
+
+            db.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Подключение закрыто");
+        }
 
         expressTypes = new String[] {
                 "Междугородний",
@@ -34,8 +42,20 @@ public class Company {
         //Создаем объект класса Car
         Car carTmp = new Car(name, speed, weight, color, wheelsCount);
         //Добавляем объект в список
-        carList.add(carTmp);
-        System.out.println("Транспортное средство добавлено");
+
+        try {
+            db.setConnection();
+
+            db.add(name, speed, weight, color, wheelsCount);
+
+            carList.add(carTmp);
+            db.close();
+
+            System.out.println("Транспортное средство добавлено");
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Подключение закрыто");
+        }
+
     }
     //Метод, добавляющий новое транспортное средство в список - экспресс
     public void addExpress(String name, int speed, int weight, String color, int railCount, String expressType) {
@@ -43,7 +63,20 @@ public class Company {
         Express expressTmp = new Express(name, speed, weight, color, railCount, expressType);
         //Добавляем объект в список
         expressList.add(expressTmp);
-        System.out.println("Транспортное средство добавлено");
+
+
+        try {
+            db.setConnection();
+
+            db.add(name, speed, weight, color, railCount, expressType);
+
+            expressList.add(expressTmp);
+            db.close();
+
+            System.out.println("Транспортное средство добавлено");
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Подключение закрыто");
+        }
     }
 
     private void randomVehicles(int count) {
@@ -164,6 +197,7 @@ public class Company {
     public void deleteVehicle(String name, String type) {
         boolean isFind = false;
         int index = 0;
+        Vehicle vehicle = null;
 
         ArrayList<Vehicle> list = null;
 
@@ -183,6 +217,7 @@ public class Company {
             if (nameTmp.equals(name)) {
                 //Получаем номер наденного объекта
                 index = list.indexOf(vehicleTmp);
+                vehicle = vehicleTmp;
                 //Ставим флаг, что найдено
                 isFind = true;
             }
@@ -190,8 +225,22 @@ public class Company {
         
         if (isFind) {
             //Удалить полученный объект
-            list.remove(index);
-            System.out.println("Транспортное средство удалено");
+            try {
+                db.setConnection();
+
+                int id = vehicle.getId();
+                String vehicleType = vehicle instanceof Car ? "cars" : vehicle instanceof Express ? "express" : null;
+
+                db.remove(id, vehicleType);
+
+                list.remove(index);
+                db.close();
+
+                System.out.println("Транспортное средство добавлено");
+            } catch (ClassNotFoundException | SQLException e) {
+                System.out.println("Подключение закрыто");
+            }
+
         } else {
             System.out.println("Транспортное средство не найдено");
         }
@@ -213,7 +262,21 @@ public class Company {
         if (vehicle != null) {
             Object[] object = {name, speed, weight, color, wheelsCount};
 
-            vehicle.updateVehicle(object);
+            try {
+                db.setConnection();
+
+                int id = vehicle.getId();
+
+                db.update(id, name, speed, weight, color, wheelsCount);
+
+                vehicle.updateVehicle(object);
+
+                db.close();
+
+
+            } catch (ClassNotFoundException | SQLException e) {
+                System.out.println("Подключение закрыто");
+            }
         }
     }
 
@@ -233,7 +296,22 @@ public class Company {
         if (vehicle != null) {
             Object[] object = {name, speed, weight, color, railsCount, expressType};
 
-            vehicle.updateVehicle(object);
+
+            try {
+                db.setConnection();
+
+                int id = vehicle.getId();
+
+                db.update(id, name, speed, weight, color, railsCount, expressType);
+
+                vehicle.updateVehicle(object);
+
+                db.close();
+
+
+            } catch (ClassNotFoundException | SQLException e) {
+                System.out.println("Подключение закрыто");
+            }
         }
     }
 

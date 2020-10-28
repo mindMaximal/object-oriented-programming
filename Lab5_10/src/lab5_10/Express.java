@@ -12,6 +12,13 @@ public class Express extends Train {
         this.expressType = expressType;
     }
 
+    public Express(int id, String name, int speed, int weight, String color, int railCount, String expressType) {
+        //Передаем параметры в конструктор родителя
+        super(id, name, speed, weight, color, railCount);
+        //Заполняем поля этого класса
+        this.expressType = expressType;
+    }
+
     @Override
     public Object[] getObject() {
         return new String[] {

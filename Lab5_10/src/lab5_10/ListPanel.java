@@ -445,7 +445,6 @@ public class ListPanel extends JPanel {
 
     public static void setExpressVisible() {
         expressRadioButton.setSelected(true);
-        System.out.println("test");
         CardLayout cardLayout = (CardLayout) tablePanel.getLayout();
         cardLayout.show(tablePanel, "ExpressTable");
         carsTableFilterTextField.setVisible(false);
